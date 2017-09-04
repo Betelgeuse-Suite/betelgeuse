@@ -1,0 +1,61 @@
+- MINOR version not working properly??
+
+- WIP: add types
+    - based on the schema, create .d.ts file, that is used at compile time
+    - this file gets included in the build process, like any other dependency
+    - since it's based on version, it means that it will work with multiple
+    patch/minor version of the src file
+
+    Look at these JSON to Type Generators for different languages:
+    - http://json2ts.com/
+    - http://jsonclassgenerator.codeplex.com/
+    - http://pojo.sodhanalibrary.com/ or http://www.jsonschema2pojo.org/ and https://github.com/joelittlejohn/jsonschema2pojo/wiki/Getting-Started#the-command-line-interface
+    
+    - https://github.com/insanoid/SwiftyJSONAccelerator
+
+
+- version it
+    - create a registry of versions, which the App can read and decide if it needs to download or not
+
+- deploy to s3
+    - add to circle ci
+        - deploy on commit to master
+        - deploy on commit to staging
+
+
+done - find all the yaml files
+done - combine them into one based on their relative path + name
+    done - the name of the file becomes the root while the directory the parent root
+done - convert the whole thing to json
+
+
+
+
+
+# NOT IMPORTANT IN PHASE 1
+
+- maybe develop an SDK to integraet with the app?
+
+- add a cli to creating all the steps
+
+- build a cross platform editor
+    - it's pretty hard to edit files on github
+    - especially data structures such as yaml/json/xml
+    - I think it would be best to build a key/value pair editor which handles all the
+        versioning, diffing, validation and deployment
+    - the editor would be a full replacement the yaml files interface (which can still be used by the dev)
+    - now the editor becomes a full platform, that lives at its dedicated url
+    - at its simplest is just a facade to the en.json
+        - but it fulfils other requirements as well, such as:
+            - validate the input
+            - show the errors
+            - set the version based on the changes type
+            - upload it to s3
+            - offer raw input (to make it easy to migrate from production to staging)
+            - show older versions in a read-only fashion
+            - able to edit older versions, but it must always get the diff from the latest released
+            version, and thus always increase the version.
+                - this will allow the older clients to still work
+                    - although now that I'm thinking about, no user can download an old version of the app
+                    which means that no old client will need to download a next version (since it already has
+                    a version installed)

@@ -1,5 +1,8 @@
 {
-  "__version": "0.0.0",
+  "id": "prev.json",
+  "array": [
+    1, 2, 3, 4, 5
+  ],
   "index": {
     "notReadyToAdd": "You need to select {0} balls first!",
     "notReadyToCheckout": "You need to add a play first",

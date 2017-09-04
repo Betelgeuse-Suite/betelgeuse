@@ -1,5 +1,5 @@
-# beetlejuice
-An all-in-one solution to manage configuration and language in native mobile apps.
+# Beetlejuice
+An all-in-one solution to manage configuration and language versioning in native mobile apps.
 
 ## Global Dependencies
 
@@ -15,3 +15,7 @@ An all-in-one solution to manage configuration and language in native mobile app
 - Get an output of the next concatonated build
 
 `ts-node ./src/index.ts --prev ./mocks/a|prev|*.json --src ./mocks/lang`
+
+- Generate a tsd file
+
+`ts-node src/TypeGenerator/index.ts`
