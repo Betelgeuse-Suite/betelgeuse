@@ -1,0 +1,14 @@
+{
+  "name": "beetlejuice",
+  "version": "0.0.0",
+  "description": "An all-in-one solution to manage configuration and language in native mobile apps.",
+  "main": "index.js",
+  "repository": "https://github.com/GabrielCTroia/beetlejuice.git",
+  "author": "Gabriel C. Troia <catalin.troia@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "@types/node": "^8.0.26",
+    "@types/ramda": "^0.24.9",
+    "ramda": "^0.24.1"
+  }
+}
