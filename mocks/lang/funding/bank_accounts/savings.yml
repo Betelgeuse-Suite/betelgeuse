@@ -1,0 +1,2 @@
+processing: "This transaction for {0} is still processing!"
+completed: "The {0} in credits for this transaction have already been applied to your account!"

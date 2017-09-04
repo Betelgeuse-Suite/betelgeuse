@@ -1,0 +1,2 @@
+confirmRequest: "Are you sure you want to purchase {0} in Jackpocket Credits?"
+requestSuccess: "Your account funding request was successful.\n Please allow up to 2 business days for the transaction to complete.\n An email with the details of this transaction is on its way to your mailbox."

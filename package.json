@@ -7,8 +7,36 @@
   "author": "Gabriel C. Troia <catalin.troia@gmail.com>",
   "license": "MIT",
   "dependencies": {
+    "@types/bluebird": "^3.5.8",
+    "@types/cli-color": "^0.3.29",
+    "@types/deep-diff": "^0.0.31",
+    "@types/js-beautify": "^0.0.31",
     "@types/node": "^8.0.26",
     "@types/ramda": "^0.24.9",
-    "ramda": "^0.24.1"
+    "@types/semver": "^5.4.0",
+    "@types/yamljs": "^0.2.30",
+    "bluebird": "^3.5.0",
+    "cli-color": "^1.2.0",
+    "deep-diff": "^0.3.8",
+    "js-beautify": "^1.6.14",
+    "ramda": "^0.24.1",
+    "semver": "^5.4.1",
+    "yamljs": "^0.3.0"
+  },
+  "devDependencies": {
+    "ava": "^0.22.0"
+  },
+  "ava": {
+    "failFast": true,
+    "tap": false
+  },
+  "scripts": {
+    "clean:build": "rm -rf ./dist",
+    "clean:tests": "rm -rf ./dist_test",
+    "build": "npm run clean:build && tsc",
+    "build:watch": "npm run build -- --watch",
+    "test": "npm run clean:tests && tsc -p tsconfig.test.json && ava",
+    "test:watch": "tsc -p tsconfig.test.json --watch & ava --watch",
+    "start": "npm run test:watch"
   }
 }

@@ -1,0 +1,13 @@
+{
+  "string2": "Just a test",
+  "number2": 2,
+  "object2": {
+    "netedString": "Just a nested string",
+    "nestedNumber": 5
+  },
+  "array2": [
+    "stringValue1",
+    "stringValue2",
+    "stringValue3"
+  ]
+}

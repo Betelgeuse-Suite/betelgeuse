@@ -1,0 +1,3 @@
+limitedTypes: "We currently only accept {0}!"
+successfullyCreated: "The payment card ending in {0} was successfully added."
+successfullyUpdated: "The payment card ending in {0} was successfully updated."
