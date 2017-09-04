@@ -7,8 +7,8 @@ import { generate as generateTSD } from './tsd.generator';
 
 Promise.all([
   generateTSD({
-    src: './mocks/b.json',
-    out: './mocks/tt.d.ts',
+    src: './mocks/a.json',
+    out: './mocks/',
     namespace: 'Beetlejuice',
   })
   .then((content) => {

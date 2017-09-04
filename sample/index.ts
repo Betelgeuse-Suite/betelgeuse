@@ -8,5 +8,12 @@ const getPrev = () => {
   return <Prev>x;
 }
 
+const getA = () => {
+  var x: A;
+  return <A>x;
+}
 
-console.log(getPrev().funding);
+getA().arrayValue[0].a;
+
+
+console.log(getPrev().array[0]);

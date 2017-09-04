@@ -1,13 +1,7 @@
 declare namespace Beetlejuice {
 	interface Prev {
 		"id": string;
-		"array": {
-			"0": number;
-			"1": number;
-			"2": number;
-			"3": number;
-			"4": number;
-		};
+		"array": {i: string, a: number}[];
 		"index": {
 			"notReadyToAdd": string;
 			"notReadyToCheckout": string;
