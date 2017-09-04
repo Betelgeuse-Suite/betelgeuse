@@ -1,6 +1,6 @@
 import test from 'ava';
 
-import { build } from '../src/IO';
+import { buildNextVersion } from '../src/IO';
 
 // const a = require('../../mocks/a.json');
 // const b = require('../../mocks/b.json');
@@ -8,7 +8,7 @@ import { build } from '../src/IO';
 
 
 test('build', t => {
-  build('mocks/prev.json', 'mocks/lang');
+  buildNextVersion('mocks/a.json', 'mocks/lang');
 
   t.is('sd', 'sd');
 });

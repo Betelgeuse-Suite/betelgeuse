@@ -3,7 +3,7 @@ import * as R from 'ramda';
 import * as Promise from 'bluebird';
 import * as  clc from 'cli-color';
 
-import { readFiles, ReadFile } from './util';
+import { readFiles, ReadFile } from '../util';
 
 
 const insertPathInto = (path: string, parent: any, leafValue: any): {path: string} => {
