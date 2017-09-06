@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "es5",
     "lib": ["es2015"],
-    "outDir": "build_test",
+    "outDir": "bin",
     "module": "commonjs",
     "declaration": true,
     "noImplicitAny": true,
@@ -11,13 +11,14 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "moduleResolution": "node",
-    "sourceMap": true,
-    "inlineSources": true,
+    "sourceMap": false,
+    "inlineSources": false,
     "noImplicitThis": true,
     "alwaysStrict": true,
     "noFallthroughCasesInSwitch": true
   },
   "include": [
-    "test/**/*"
+    "src/**/*",
+    "typings/**/*"
   ]
 }

@@ -1,15 +1,35 @@
 import * as fs from 'fs';
 import * as Promise from 'bluebird';
+import * as beautify from 'js-beautify';
 
-export const readFile = (path: string) => new Promise((resolve, reject) => {
-  fs.readFile(path, 'utf-8', (err, content) => {
-    if (err) {
-      reject(err);
-    } else {
-      resolve(content);
-    }
-  });
-});
+export const readFile = (path: string) => {
+  return new Promise((resolve, reject) => {
+    fs.readFile(path, 'utf-8', (err, content) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(content);
+      }
+    })
+  })
+    // 'hard code' the type
+    .then(s => <string>s);
+}
+
+export const readJSONFile = 
+  (path: string) => Promise.resolve(readFile(path));
+
+export const jsonToObj = <T>(s: string): T => {
+  if (typeof s === 'string') {
+    return JSON.parse(s);
+  }
+
+  throw `${s} is not a Valid JSON!`;
+}
+
+export const objToJson = (o: Object): string => {
+  return beautify(JSON.stringify(o));
+}
 
 export const writeFile = (path: string, content: string) => new Promise((resolve, reject) => {
   fs.writeFile(path, content, (err) => {
@@ -64,7 +84,7 @@ export const readFiles = (dirname: string, onDone: (...args: any[]) => void, onE
             return;
           }
 
-          files.push({path, content});
+          files.push({ path, content });
 
           if (!--pending) {
             onDone(files);
@@ -96,3 +116,5 @@ export const passThrough = <T>(fn: (a: T) => void) => (arg: T) => {
 export const passThroughAwait = <T>(fn: (a: T) => void) => (arg: T) => {
   return Promise.resolve(fn.call(fn, arg)).then(() => arg);
 };
+
+export const now = () => new Date().getTime();

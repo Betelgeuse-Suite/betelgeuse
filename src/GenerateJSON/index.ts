@@ -3,10 +3,10 @@ import * as R from 'ramda';
 import * as Promise from 'bluebird';
 import * as  clc from 'cli-color';
 
-import { readFiles, ReadFile } from '../util';
+import { readFiles, ReadFile, objToJson } from '../util';
 
 
-const insertPathInto = (path: string, parent: any, leafValue: any): {path: string} => {
+const insertPathInto = (path: string, parent: any, leafValue: any): { path: string } => {
   const dirs = path.split('/');
   const key = dirs[0];
 
@@ -19,7 +19,7 @@ const insertPathInto = (path: string, parent: any, leafValue: any): {path: strin
   }
 };
 
-const concatObjects: (fs: ReadFile[]) => {[i: string]: any} = 
+const concatObjects: (fs: ReadFile[]) => { [i: string]: any } =
   R.reduce((result, file: ReadFile) => {
     insertPathInto(file.path, result, file.content);
 
@@ -45,12 +45,14 @@ const isYamlFile = (f: ReadFile) => {
   const ext = f.path.slice(f.path.lastIndexOf('.') + 1);
   return ext === 'yaml' || ext === 'yml';
 };
-const onlyYAML: (f: ReadFile[]) => ReadFile[] = 
+const onlyYAML: (f: ReadFile[]) => ReadFile[] =
   R.filter((f) => isYamlFile(f));
 
 
-export const concatFilesAtPath = (rootPath: string) => new Promise((resolve, reject) => {
-  readFiles(rootPath, (files) => {
+export const generateJSONFromYamlFiles = (atPath: string) => new Promise((resolve, reject) => {
+  console.log('Generating JSON Files from Yaml at', atPath);
+
+  readFiles(atPath, (files) => {
     const result = concatObjects(R.map((f) => {
       try {
         var parsed = yaml.parse(f.content);
@@ -63,8 +65,8 @@ export const concatFilesAtPath = (rootPath: string) => new Promise((resolve, rej
       return R.merge(f, {
         content: parsed,
         path: R.pipe(
-            stripFileExtension,
-            stripRoot(rootPath),
+          stripFileExtension,
+          stripRoot(atPath),
         )(f).path
       });
 
@@ -74,5 +76,6 @@ export const concatFilesAtPath = (rootPath: string) => new Promise((resolve, rej
   }, (e) => {
     console.log(clc.red('Read File Error:', e.message));
     reject(e);
-  });
-});
+  })
+})
+  .then(objToJson);

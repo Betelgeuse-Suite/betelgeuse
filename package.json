@@ -1,6 +1,6 @@
 {
   "name": "beetlejuice",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "An all-in-one solution to manage configuration and language in native mobile apps.",
   "main": "index.js",
   "repository": "https://github.com/GabrielCTroia/beetlejuice.git",
@@ -9,6 +9,7 @@
   "dependencies": {
     "@types/bluebird": "^3.5.8",
     "@types/cli-color": "^0.3.29",
+    "@types/commander": "^2.9.2",
     "@types/deep-diff": "^0.0.31",
     "@types/gulp": "^4.0.4",
     "@types/gulp-insert": "^0.5.6",
@@ -19,6 +20,7 @@
     "@types/yamljs": "^0.2.30",
     "bluebird": "^3.5.0",
     "cli-color": "^1.2.0",
+    "commander": "^2.11.0",
     "deep-diff": "^0.3.8",
     "dtsgenerator": "^0.9.5",
     "dtsmake": "^0.0.10",
@@ -40,12 +42,14 @@
     "tap": false
   },
   "scripts": {
-    "clean:build": "rm -rf ./dist",
-    "clean:tests": "rm -rf ./dist_test",
+    "clean:build": "rm -rf ./bin ./build",
+    "clean:tests": "rm -rf ./build_test",
+    "clean:release": "rm -rf ./bin",
     "build": "npm run clean:build && tsc",
     "build:watch": "npm run build -- --watch",
     "test": "npm run clean:tests && tsc -p tsconfig.test.json && ava",
     "test:watch": "tsc -p tsconfig.test.json --watch & ava --watch",
-    "start": "npm run test:watch"
+    "start": "npm run test:watch",
+    "release": "npm run clean:release && tsc -p tsconfig.release.json"
   }
 }
