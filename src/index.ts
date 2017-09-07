@@ -6,18 +6,7 @@ import { createFile } from './CreateFile';
 
 import { generateJSONFromYamlFiles } from './GenerateJSON';
 import { generateTypes } from './GenerateTypes';
-// import { reconcile } from './Reconcile';
 import { getReleaseType } from './Version';
-
-// import { A } from '../a.d';
-
-// const getData = () => {
-//   const json = require('../tmp/a.json');
-//   return <A>json;
-// }
-
-// console.log('getData', getData());
-
 
 const command_generateJson = (srcDir: string, options: { out?: string } = {}) => {
   Promise
@@ -40,36 +29,16 @@ const command_generateTypes = (jsonFilePath: string, options: { out?: string } =
     });
 }
 
-// const command_reconcile = (srcDir: string, options: { prev?: string } = {}) => {
-//   Promise
-//     .all([
-//       (typeof options.prev === 'string')
-//         ? readFile(options.prev)
-//         : '{}', // empty json
-//       generateJSONFromYamlFiles(srcDir),
-//     ])
-//     .then(([prevJson, nextJson]) => reconcile(prevJson, nextJson))
-//     .then((r) => {
-//       console.log('reconciled', r);
-//     });
-// }
-
 commander
   .version(pkg.version)
 
-// commander
-//   .command('reconcile <srcDir>')
-//   .option('--prev, [prev]', 'Previous version of the file to merge')
-//   .action(command_reconcile);
-
-
-// Step 1 - Generate the json
+// Step 1 - Generate the json from yaml
 commander
   .command('generate-json <srcDir>')
   .option('--out [out]', 'Output file path')
   .action(command_generateJson);
 
-// Step 2 - Get the Release Type 
+// Step 2 - Get the Release Type by comparing the previous file with the generated one
 commander
   .command('get-release-type <nextJsonPath> <prevJsonPath>')
   .action((next: string, prev: string) => {
@@ -89,5 +58,8 @@ commander
   .option('--out [out]', 'Output directory path')
   .action(command_generateTypes);
 
+// Step 4 - Apply the next version to both generated files
+
+// Step 5 - Push new files to the CDN
 
 commander.parse(process.argv);
