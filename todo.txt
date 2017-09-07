@@ -1,4 +1,5 @@
 - MINOR version not working properly??
+  EDIT Sept 7, 2017: Yes, I can confirm this. It says an additino is a major while it should simply be a minor.
 
 - WIP: add types
     - based on the schema, create .d.ts file, that is used at compile time
