@@ -1,6 +1,7 @@
 import * as fs from 'fs';
 import * as Promise from 'bluebird';
 import * as beautify from 'js-beautify';
+import * as mkdirp from 'mkdirp';
 
 export const readFile = (path: string) => {
   return new Promise((resolve, reject) => {
@@ -91,6 +92,18 @@ export const readFiles = (dirname: string, onDone: (...args: any[]) => void, onE
           }
         });
       }
+    });
+  });
+}
+
+export const makeDirRecursively = (path: string) => {
+  return new Promise((resolve, reject) => {
+    mkdirp(path, (err) => {
+      if (err) {
+        reject(err);
+        return;
+      }
+      resolve();
     });
   });
 }
