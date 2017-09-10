@@ -6,4 +6,3 @@ exports.generateClientSDKs = function (appName) {
         typescript_1.generate(appName),
     ]);
 };
-//# sourceMappingURL=index.js.map

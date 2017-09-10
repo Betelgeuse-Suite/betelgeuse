@@ -155,4 +155,3 @@ commander
     .command('compile <repositoryPath>')
     .action(command_compile);
 commander.parse(process.argv);
-//# sourceMappingURL=index.js.map

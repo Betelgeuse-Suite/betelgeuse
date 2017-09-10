@@ -14,4 +14,3 @@ exports.generateTypes = function (jsonPath) {
         console.error('TypeGenerator Error', e);
     });
 };
-//# sourceMappingURL=index.js.map

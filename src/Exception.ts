@@ -17,5 +17,3 @@ export class UncommitedChanges extends Exception {
     super(`There are uncommited changes! ${msg}`);
   }
 }
-
-export class 
