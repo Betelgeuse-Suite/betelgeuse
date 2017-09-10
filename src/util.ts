@@ -17,7 +17,7 @@ export const readFile = (path: string) => {
     .then(s => <string>s);
 }
 
-export const readJSONFile = 
+export const readJSONFile =
   (path: string) => Promise.resolve(readFile(path));
 
 export const jsonToObj = <T>(s: string): T => {
@@ -39,8 +39,9 @@ export const writeFile = (path: string, content: string) => new Promise((resolve
     } else {
       resolve();
     }
-  });
-});
+  })
+})
+  .then(() => undefined);
 
 export type ReadFile = {
   path: string;

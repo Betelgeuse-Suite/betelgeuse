@@ -36,7 +36,8 @@ exports.writeFile = function (path, content) { return new Promise(function (reso
             resolve();
         }
     });
-}); };
+})
+    .then(function () { return undefined; }); };
 exports.readFiles = function (dirname, onDone, onError) {
     var files = [];
     if (dirname && dirname.slice(-1) !== '/') {

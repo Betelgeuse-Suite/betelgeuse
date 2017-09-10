@@ -1,6 +1,6 @@
 'use strict';
 
-export default class Exception extends Error {
+export class Exception extends Error {
   constructor(msg: string = 'Locale Exception') {
     super(msg);
   }
@@ -8,6 +8,6 @@ export default class Exception extends Error {
 
 export class NoChangesException extends Exception {
   constructor(msg: string = '') {
-    super(`Files are identical! ${msg}`);
+    super(`There are no changes! ${msg}`);
   }
 }

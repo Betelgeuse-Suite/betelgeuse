@@ -33,7 +33,6 @@ var isYamlFile = function (f) {
 };
 var onlyYAML = R.filter(function (f) { return isYamlFile(f); });
 exports.generateJSONFromYamlFiles = function (atPath) { return new Promise(function (resolve, reject) {
-    console.log('Generating JSON Files from Yaml at', atPath);
     util_1.readFiles(atPath, function (files) {
         var result = concatObjects(R.map(function (f) {
             try {

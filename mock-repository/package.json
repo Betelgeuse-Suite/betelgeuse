@@ -4,11 +4,14 @@
   "description": "The Mock Repository",
   "main": "''",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "clean:compile": "rm -rf ./.compile && mkdir ./.compile",
+    "precompile": "npm run clean:compile",
+    "compile": "node ./node_modules/beetlejuice/.bin/index.js compile source --out compiled"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
-
+    "beetlejuice": "https://github.com/GabrielCTroia/beetlejuice.git@v0.0.2"
   }
 }

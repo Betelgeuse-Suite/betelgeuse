@@ -3,7 +3,12 @@ import * as R from 'ramda';
 import * as Promise from 'bluebird';
 import * as  clc from 'cli-color';
 
-import { readFiles, ReadFile, objToJson } from '../util';
+import {
+  readFiles,
+  ReadFile,
+  objToJson,
+  passThrough,
+} from '../util';
 
 
 const insertPathInto = (path: string, parent: any, leafValue: any): { path: string } => {
@@ -50,8 +55,6 @@ const onlyYAML: (f: ReadFile[]) => ReadFile[] =
 
 
 export const generateJSONFromYamlFiles = (atPath: string) => new Promise((resolve, reject) => {
-  console.log('Generating JSON Files from Yaml at', atPath);
-
   readFiles(atPath, (files) => {
     const result = concatObjects(R.map((f) => {
       try {

@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+var Promise = require("bluebird");
 var util_1 = require("./util");
 exports.prepend = function (str) {
     return "   \n    Created at " + util_1.now() + "\n    " + str + "\n  ";

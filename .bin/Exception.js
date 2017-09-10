@@ -18,12 +18,12 @@ var Exception = (function (_super) {
     }
     return Exception;
 }(Error));
-exports.default = Exception;
+exports.Exception = Exception;
 var NoChangesException = (function (_super) {
     __extends(NoChangesException, _super);
     function NoChangesException(msg) {
         if (msg === void 0) { msg = ''; }
-        return _super.call(this, "Files are identical! " + msg) || this;
+        return _super.call(this, "There are no changes! " + msg) || this;
     }
     return NoChangesException;
 }(Exception));
