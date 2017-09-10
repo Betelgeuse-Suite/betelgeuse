@@ -1,0 +1,38 @@
+{
+    "": {
+        "payments": {
+            "credit_cards": {
+                "limitedTypes": "We currently only accept {0}!",
+                "successfullyCreated": "The payment card ending in {0} was successfully added.",
+                "successfullyUpdated": "The payment card ending in {0} was successfully updated."
+            }
+        },
+        "index": {
+            "notReadyToAdd": "You need to select {0} balls first!",
+            "notReadyToCheckout": "You need to add a play first",
+            "new_prop": "this is a new key in the schema"
+        },
+        "funding": {
+            "ACH": {
+                "confirmRequest": "Are you sure you want to purchase {0} in Jackpocket Credits?",
+                "requestSuccess": "Your account funding request was successful.\n Please allow up to 2 business days for the transaction to complete.\n An email with the details of this transaction is on its way to your mailbox."
+            },
+            "bank_accounts": {
+                "checkings": {
+                    "onBoarding": {
+                        "phoneVerificationPrompt": "We've sent you a text message to verify your phone",
+                        "phoneVerificationSuccess": "You're in!\n It's time to get rich\n #newmoney"
+                    },
+                    "onLeaving": {
+                        "phone": "We've sent you a text message to verify your phone",
+                        "tv": "You're in!\n It's time to get rich\n #newmoney"
+                    }
+                },
+                "savings": {
+                    "processing": "This transaction for {0} is still processing!",
+                    "completed": "The {0} in credits for this transaction have already been applied to your account!"
+                }
+            }
+        }
+    }
+}

@@ -2,20 +2,21 @@
   "compilerOptions": {
     "target": "es5",
     "lib": ["es2015"],
-    "outDir": "bin",
+    "outDir": ".bin",
     "module": "commonjs",
     "declaration": true,
     "noImplicitAny": true,
     "strictNullChecks": true,
     "removeComments": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
+    // "noUnusedLocals": true,
+    // "noUnusedParameters": true,
     "moduleResolution": "node",
     "sourceMap": false,
     "inlineSources": false,
     "noImplicitThis": true,
     "alwaysStrict": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+    "pretty": true
   },
   "include": [
     "src/**/*",

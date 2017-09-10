@@ -15,7 +15,8 @@
     "inlineSources": true,
     "noImplicitThis": true,
     "alwaysStrict": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+    "pretty": true
   },
   "include": [
     "src/**/*",
