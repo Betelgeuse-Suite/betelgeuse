@@ -47,7 +47,6 @@
     "tap": false
   },
   "scripts": {
-    "postinstall": "npm run release",
     "clean:build": "rm -rf ./.bin ./build",
     "clean:tests": "rm -rf ./build_test",
     "clean:release": "rm -rf ./.bin",
