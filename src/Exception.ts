@@ -11,3 +11,11 @@ export class NoChangesException extends Exception {
     super(`There are no changes! ${msg}`);
   }
 }
+
+export class UncommitedChanges extends Exception {
+  constructor(msg: string = '') {
+    super(`There are uncommited changes! ${msg}`);
+  }
+}
+
+export class 
