@@ -62,4 +62,4 @@ dist
 dist_test
 build
 build_test
-bin
+.bin

@@ -120,8 +120,9 @@ export const makeDirRecursively = (path: string) => {
  * when you need chain a function that creates a side effect!
  */
 export const passThrough = <T>(fn: (a: T) => void) => (arg: T) => {
-  fn.call(fn, arg);
-  return arg;
+  // If the Promise resolves, bypass it's return and send back the arg,
+  // If the promise rejects, this will ensure the chain interrupts.
+  return Promise.resolve(fn.call(fn, arg)).then(() => arg);
 };
 
 /**

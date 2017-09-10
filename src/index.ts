@@ -6,6 +6,7 @@ import { passThrough } from './util';
 import {
   Exception,
   NoChangesException,
+  UncommitedChanges,
 } from './Exception';
 
 const pkg = require('../package.json');
@@ -21,6 +22,7 @@ import { createFile } from './CreateFile';
 
 import { generateJSONFromYamlFiles } from './GenerateJSON';
 import { generateTypes } from './GenerateTypes';
+import { generateClientSDKs } from './GenerateClientSDK';
 import { getReleaseType } from './Version';
 
 const command_generateJson = (srcDir: string, options: { out?: string } = {}) => {
@@ -91,26 +93,45 @@ commander
   .option('--out [out]', 'Output directory path')
   .action(command_generateTypes);
 
+// Extra Step - Generate Client SDK template
 
-// The compile command takes care of:
-//  Steps 1, 2, 3 and 4 - - Apply the next version to both generated files
-const command_compile = (repoPath: string) => {
-  // validate is beetlejuice repo: ./source, ./compiled dir and package.json or smtg like that
-  const name = 'MyApp';
+const command_generateClientSDK = (appName: string, options: { out?: string } = {}) => {
+  return Promise
+    .resolve(generateClientSDKs(appName))
+    .then(([typescript]) => {
+      const [dts, js] = typescript;
 
+      if (typeof options.out !== 'string') {
+        console.log(dts);
+        console.log('');
+        console.log(js);
+
+        return;
+      }
+
+      return Promise.all([
+        writeFile(`${options.out}/beetlejuice.d.ts`, dts),
+        writeFile(`${options.out}/beetlejuice.js`, js),
+      ])
+        // return a single value, otherwise the compiler complains.
+        .then(() => undefined);
+    })
+    .then(passThrough(() => {
+      console.log('Successfully generated SDKs at', options.out);
+    }));
+
+}
+
+const untrackedFiles = () => {
+  return !!shell.exec('git diff --name-only').stdout;
+}
+
+const applyVersion = (AppName: string, repoPath: string) => {
   const tmp = `${repoPath}/tmp`;
-  const compiled = `${repoPath}/compiled`;
+  const compiled = `${repoPath}/.bin`;
 
   return Promise
-    .resolve()
-    .then(() => {
-      // Clean Step
-      shell.rm('-rf', tmp);
-      shell.mkdir(tmp);
-    })
-    .then(() => command_generateJson(`${repoPath}/source`, { out: `${tmp}/${name}.json` })) // => json
-    .then(() => command_generateTypes(`${tmp}/${name}.json`, { out: `${tmp}/${name}.d.ts` })) // => tsd
-    .then(() => getReleaseTypeFromFiles(`${tmp}/${name}.json`, `${compiled}/${name}.json`))
+    .resolve(getReleaseTypeFromFiles(`${tmp}/${AppName}.json`, `${compiled}/${AppName}.json`))
     .then((releaseType) => {
       if (releaseType === 'none') {
         return Promise.reject(new NoChangesException())
@@ -119,6 +140,10 @@ const command_compile = (repoPath: string) => {
       return releaseType;
     })
     .then(passThrough((releaseType) => {
+      if (untrackedFiles()) {
+        return Promise.reject(new UncommitedChanges())
+      }
+
       // Move the files over
       shell.rm('-rf', compiled);
       shell.mkdir(compiled);
@@ -138,7 +163,36 @@ const command_compile = (repoPath: string) => {
     .then(() => {
       // Deploy the copmiled changes (by pushing to git repo to its remote origin)
       return shell.exec('git push origin master; git push --tags');
+    });
+}
+
+commander
+  .command('generate-client-sdks <AppName>')
+  .option('--out', 'Output directory path')
+  .action(command_generateClientSDK);
+
+// The compile command takes care of:
+//  Steps 1, 2, 3 and 4 - - Apply the next version to both generated files
+const command_compile = (repoPath: string) => {
+  // validate is beetlejuice repo: ./source, ./compiled dir and package.json or smtg like that
+  const AppName = 'MyApp';
+
+  const tmp = `${repoPath}/tmp`;
+  const compiled = `${repoPath}/.bin`;
+
+  console.log('HELLO');
+
+  return Promise
+    .resolve()
+    .then(() => {
+      // Clean Step
+      shell.rm('-rf', tmp);
+      shell.mkdir(tmp);
     })
+    .then(() => command_generateJson(`${repoPath}/source`, { out: `${tmp}/${AppName}.json` })) // => json
+    .then(() => command_generateTypes(`${tmp}/${AppName}.json`, { out: `${tmp}/${AppName}.d.ts` })) // => tsd
+    .then(() => command_generateClientSDK(AppName, { out: `${tmp}` })) // => client sdks 
+    .then(() => applyVersion(AppName, repoPath)) // => apply next version
     .catch((e: Exception) => console.error(e.message));
 }
 
