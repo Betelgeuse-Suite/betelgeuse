@@ -4,7 +4,7 @@ export declare const readFile: (path: string) => Promise<string>;
 export declare const readJSONFile: (path: string) => Promise<string>;
 export declare const jsonToObj: <T>(s: string) => T;
 export declare const objToJson: (o: Object) => string;
-export declare const writeFile: (path: string, content: string) => Promise<{}>;
+export declare const writeFile: (path: string, content: string) => Promise<undefined>;
 export declare type ReadFile = {
     path: string;
     content: string;

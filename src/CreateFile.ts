@@ -1,3 +1,5 @@
+import * as Promise from 'bluebird';
+
 import {
   writeFile,
   now,
