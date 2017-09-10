@@ -20,4 +20,3 @@ var getChangesKind = R.reduce(function (prevKind, _a) {
 exports.detectChanges = function (a, b) {
     return changeTypes[getChangesKind(deep_diff_1.diff(a, b) || [])];
 };
-//# sourceMappingURL=detectChanges.js.map

@@ -23,4 +23,3 @@ exports.createFile = function (outPath, fromStr) {
         return Promise.reject(e);
     });
 };
-//# sourceMappingURL=CreateFile.js.map

@@ -29,4 +29,3 @@ exports.generate = function (o) {
         .then(function (r) { return r; })
         .then(beautify);
 };
-//# sourceMappingURL=tsd.generator.js.map

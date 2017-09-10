@@ -96,4 +96,3 @@ exports.passThroughAwait = function (fn) { return function (arg) {
     return Promise.resolve(fn.call(fn, arg)).then(function () { return arg; });
 }; };
 exports.now = function () { return new Date().getTime(); };
-//# sourceMappingURL=util.js.map

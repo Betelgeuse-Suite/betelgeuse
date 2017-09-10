@@ -7,5 +7,3 @@ export declare class NoChangesException extends Exception {
 export declare class UncommitedChanges extends Exception {
     constructor(msg?: string);
 }
-export declare class  {
-}

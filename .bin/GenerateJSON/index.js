@@ -55,4 +55,3 @@ exports.generateJSONFromYamlFiles = function (atPath) { return new Promise(funct
     });
 })
     .then(util_1.objToJson); };
-//# sourceMappingURL=index.js.map

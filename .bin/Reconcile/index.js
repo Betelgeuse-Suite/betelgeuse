@@ -14,4 +14,3 @@ exports.reconcile = function (prevJson, currentJson) {
         console.error(clc.yellow(e.toString()));
     });
 };
-//# sourceMappingURL=index.js.map

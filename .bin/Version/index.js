@@ -15,4 +15,3 @@ exports.applyVersion = function (prev, next) {
     }
     return R.merge(next, { __version: nextVersion });
 };
-//# sourceMappingURL=index.js.map

@@ -20,4 +20,3 @@ exports.generate = function (appName) {
         util_1.readFile(dirPath + '/typescript.js.tpl').then(compile),
     ]);
 };
-//# sourceMappingURL=typescript.js.map

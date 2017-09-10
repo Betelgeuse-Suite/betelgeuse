@@ -37,9 +37,3 @@ var UncommitedChanges = (function (_super) {
     return UncommitedChanges;
 }(Exception));
 exports.UncommitedChanges = UncommitedChanges;
-var default_1 = (function () {
-    function default_1() {
-    }
-    return default_1;
-}());
-//# sourceMappingURL=Exception.js.map
