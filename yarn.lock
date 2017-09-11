@@ -1708,17 +1708,6 @@ gulp-intercept@^0.1.0:
   dependencies:
     event-stream "~3.0.18"
 
-"gulp-json-to-tsd@https://github.com/GabrielCTroia/gulp-json-to-tsd.git":
-  version "0.9.5"
-  resolved "https://github.com/GabrielCTroia/gulp-json-to-tsd.git#0c34ffc4431d47fa8e7d80b65549e0f9ffd9e039"
-  dependencies:
-    gulp-util "^3.0.8"
-    lodash "^4.17.4"
-    lodash.isarray "^4.0.0"
-    lodash.values "^4.3.0"
-    path "^0.12.7"
-    through2 "^2.0.3"
-
 gulp-util@^3.0.0, gulp-util@^3.0.8:
   version "3.0.8"
   resolved "https://registry.yarnpkg.com/gulp-util/-/gulp-util-3.0.8.tgz#0054e1e744502e27c04c187c3ecc505dd54bbb4f"

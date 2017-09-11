@@ -180,8 +180,6 @@ const command_compile = (repoPath: string) => {
   const tmp = `${repoPath}/tmp`;
   const compiled = `${repoPath}/.bin`;
 
-  console.log('HELLO');
-
   return Promise
     .resolve()
     .then(() => {

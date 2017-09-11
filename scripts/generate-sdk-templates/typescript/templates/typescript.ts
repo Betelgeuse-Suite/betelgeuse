@@ -1,4 +1,5 @@
 import { __SAMPLE__ } from './__SAMPLE__.d';
-var json = require('./__SAMPLE__.json');
 
-export const get = () => <__SAMPLE__>json;
+const json = require('./__SAMPLE__.json');
+
+export const model = <__SAMPLE__>json;
