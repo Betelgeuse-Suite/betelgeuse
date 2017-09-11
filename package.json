@@ -1,6 +1,6 @@
 {
   "name": "beetlejuice",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "An all-in-one solution to manage configuration and language in native mobile apps.",
   "main": "index.js",
   "repository": "https://github.com/GabrielCTroia/beetlejuice.git",
