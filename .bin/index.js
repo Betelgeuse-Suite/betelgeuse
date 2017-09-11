@@ -138,7 +138,6 @@ var command_compile = function (repoPath) {
     var AppName = 'MyApp';
     var tmp = repoPath + "/tmp";
     var compiled = repoPath + "/.bin";
-    console.log('HELLO');
     return Promise
         .resolve()
         .then(function () {
