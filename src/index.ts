@@ -17,7 +17,6 @@ import {
   passThroughAwait,
   writeFile,
 } from './util';
-import * as beautify from 'js-beautify';
 import { createFile } from './CreateFile';
 
 import { generateJSONFromYamlFiles } from './GenerateJSON';
@@ -37,7 +36,9 @@ const command_generateJson = (srcDir: string, options: { out?: string } = {}) =>
       return createFile(options.out, json);
     })
     .then(passThrough(() => {
-      console.log('Successfully generated JSON files from', srcDir, 'at', options.out);
+      if (options.out) {
+        console.log('Successfully generated JSON files from', srcDir, 'at', options.out);
+      }
     }));
 }
 
@@ -53,7 +54,9 @@ const command_generateTypes = (jsonFilePath: string, options: { out?: string } =
       return writeFile(options.out, tsd);
     }))
     .then(passThrough(() => {
-      console.log('Successfully generated Typescript .tsd from', jsonFilePath, 'at', options.out);
+      if (options.out) {
+        console.log('Successfully generated Typescript .tsd from', jsonFilePath, 'at', options.out);
+      }
     }));
 }
 
@@ -117,7 +120,9 @@ const command_generateClientSDK = (appName: string, options: { out?: string } = 
         .then(() => undefined);
     })
     .then(passThrough(() => {
-      console.log('Successfully generated SDKs at', options.out);
+      if (options.out) {
+        console.log('Successfully generated SDKs at', options.out);
+      }
     }));
 
 }
@@ -133,16 +138,16 @@ const applyVersion = (AppName: string, repoPath: string) => {
   return Promise
     .resolve(getReleaseTypeFromFiles(`${tmp}/${AppName}.json`, `${compiled}/${AppName}.json`))
     .then((releaseType) => {
-      // if (releaseType === 'none') {
-      //   return Promise.reject(new NoChangesException())
-      // }
+      if (releaseType === 'none') {
+        return Promise.reject(new NoChangesException())
+      }
 
       return releaseType;
     })
     .then(passThrough((releaseType) => {
-      // if (untrackedFiles()) {
-      //   return Promise.reject(new UncommitedChanges())
-      // }
+      if (untrackedFiles()) {
+        return Promise.reject(new UncommitedChanges())
+      }
 
       // Move the files over
       shell.rm('-rf', compiled);
@@ -151,19 +156,19 @@ const applyVersion = (AppName: string, repoPath: string) => {
       shell.cp('-R', `${tmp}/*`, compiled)
       shell.rm('-rf', tmp);
     }))
-    // .then(passThrough(() => {
-    //   // Commit the compile step
-    //   shell.exec(`git add ${compiled}`);
-    //   shell.exec(`git commit -m 'Beetlejuice Commit: Source Compiled.'`);
-    // }))
-    // .then((releaseType) => {
-    //   // Apply the version, by using `npm version` which creates a commit and a relese tag
-    //   return shell.exec(`npm version ${releaseType}`);
-    // })
-    // .then(() => {
-    //   // Deploy the copmiled changes (by pushing to git repo to its remote origin)
-    //   return shell.exec('git push origin master; git push --tags');
-    // });
+    .then(passThrough(() => {
+      // Commit the compile step
+      shell.exec(`git add ${compiled}`);
+      shell.exec(`git commit -m 'Beetlejuice Commit: Source Compiled.'`);
+    }))
+    .then((releaseType) => {
+      // Apply the version, by using `npm version` which creates a commit and a relese tag
+      return shell.exec(`npm version ${releaseType}`);
+    })
+    .then(() => {
+      // Deploy the copmiled changes (by pushing to git repo to its remote origin)
+      return shell.exec('git push origin master; git push --tags');
+    });
 }
 
 commander

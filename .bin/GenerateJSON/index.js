@@ -6,7 +6,7 @@ var Promise = require("bluebird");
 var clc = require("cli-color");
 var util_1 = require("../util");
 var insertPathInto = function (path, parent, leafValue) {
-    var dirs = path.split('/');
+    var dirs = R.reject(R.isEmpty, path.split('/'));
     var key = dirs[0];
     if (dirs.length > 1) {
         parent[key] = parent[key] || {};
@@ -34,7 +34,7 @@ var isYamlFile = function (f) {
 var onlyYAML = R.filter(function (f) { return isYamlFile(f); });
 exports.generateJSONFromYamlFiles = function (atPath) { return new Promise(function (resolve, reject) {
     util_1.readFiles(atPath, function (files) {
-        var result = concatObjects(R.map(function (f) {
+        var fileContents = R.map(function (f) {
             try {
                 var parsed = yaml.parse(f.content);
             }
@@ -47,8 +47,8 @@ exports.generateJSONFromYamlFiles = function (atPath) { return new Promise(funct
                 content: parsed,
                 path: R.pipe(stripFileExtension, stripRoot(atPath))(f).path
             });
-        }, onlyYAML(files)));
-        resolve(result);
+        }, onlyYAML(files));
+        resolve(concatObjects(fileContents));
     }, function (e) {
         console.log(clc.red('Read File Error:', e.message));
         reject(e);

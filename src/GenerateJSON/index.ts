@@ -10,9 +10,9 @@ import {
   passThrough,
 } from '../util';
 
-
 const insertPathInto = (path: string, parent: any, leafValue: any): { path: string } => {
-  const dirs = path.split('/');
+  const dirs = R.reject(R.isEmpty, path.split('/'));
+
   const key = dirs[0];
 
   if (dirs.length > 1) {
@@ -27,7 +27,6 @@ const insertPathInto = (path: string, parent: any, leafValue: any): { path: stri
 const concatObjects: (fs: ReadFile[]) => { [i: string]: any } =
   R.reduce((result, file: ReadFile) => {
     insertPathInto(file.path, result, file.content);
-
     return result;
   }, {});
 
@@ -56,7 +55,7 @@ const onlyYAML: (f: ReadFile[]) => ReadFile[] =
 
 export const generateJSONFromYamlFiles = (atPath: string) => new Promise((resolve, reject) => {
   readFiles(atPath, (files) => {
-    const result = concatObjects(R.map((f) => {
+    const fileContents = R.map((f) => {
       try {
         var parsed = yaml.parse(f.content);
       } catch (e) {
@@ -73,9 +72,9 @@ export const generateJSONFromYamlFiles = (atPath: string) => new Promise((resolv
         )(f).path
       });
 
-    }, onlyYAML(files)));
+    }, onlyYAML(files));
 
-    resolve(result);
+    resolve(concatObjects(fileContents));
   }, (e) => {
     console.log(clc.red('Read File Error:', e.message));
     reject(e);
