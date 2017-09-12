@@ -50,6 +50,7 @@
     "clean:build": "rm -rf ./.bin ./build",
     "clean:tests": "rm -rf ./build_test",
     "clean:release": "rm -rf ./.bin",
+    "sdk-templates:typescript": "ts-node ./scripts/generate-sdk-templates/typescript",
     "build": "npm run clean:build && tsc",
     "build:watch": "npm run build -- --watch",
     "test": "npm run clean:tests && tsc -p tsconfig.test.json && ava",

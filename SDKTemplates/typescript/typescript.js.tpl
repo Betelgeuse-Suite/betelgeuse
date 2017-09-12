@@ -1,4 +1,4 @@
 "use strict";
 exports.__esModule = true;
-var json = require('./{{=APP_NAME}}.json');
-exports.get = function () { return json; };
+var json = require('./__SAMPLE__.json');
+exports.model = json;

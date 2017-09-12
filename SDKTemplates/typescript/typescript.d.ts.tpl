@@ -1,3 +1,2 @@
-import { {{=APP_NAME}} } from './{{=APP_NAME}}.d';
-export declare const get: () => {{=APP_NAME}};
-
+import { __SAMPLE__ } from './__SAMPLE__.d';
+export declare const model: __SAMPLE__;
