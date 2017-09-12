@@ -4,7 +4,6 @@ var commander = require("commander");
 var shell = require("shelljs");
 var Promise = require("bluebird");
 var util_1 = require("./util");
-var Exception_1 = require("./Exception");
 var pkg = require('../package.json');
 var util_2 = require("./util");
 var CreateFile_1 = require("./CreateFile");
@@ -105,30 +104,14 @@ var applyVersion = function (AppName, repoPath) {
     return Promise
         .resolve(getReleaseTypeFromFiles(tmp + "/" + AppName + ".json", compiled + "/" + AppName + ".json"))
         .then(function (releaseType) {
-        if (releaseType === 'none') {
-            return Promise.reject(new Exception_1.NoChangesException());
-        }
         return releaseType;
     })
         .then(util_1.passThrough(function (releaseType) {
-        if (untrackedFiles()) {
-            return Promise.reject(new Exception_1.UncommitedChanges());
-        }
         shell.rm('-rf', compiled);
         shell.mkdir(compiled);
         shell.cp('-R', tmp + "/*", compiled);
         shell.rm('-rf', tmp);
-    }))
-        .then(util_1.passThrough(function () {
-        shell.exec("git add " + compiled);
-        shell.exec("git commit -m 'Beetlejuice Commit: Source Compiled.'");
-    }))
-        .then(function (releaseType) {
-        return shell.exec("npm version " + releaseType);
-    })
-        .then(function () {
-        return shell.exec('git push origin master; git push --tags');
-    });
+    }));
 };
 commander
     .command('generate-client-sdks <AppName>')

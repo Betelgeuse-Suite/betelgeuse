@@ -133,16 +133,16 @@ const applyVersion = (AppName: string, repoPath: string) => {
   return Promise
     .resolve(getReleaseTypeFromFiles(`${tmp}/${AppName}.json`, `${compiled}/${AppName}.json`))
     .then((releaseType) => {
-      if (releaseType === 'none') {
-        return Promise.reject(new NoChangesException())
-      }
+      // if (releaseType === 'none') {
+      //   return Promise.reject(new NoChangesException())
+      // }
 
       return releaseType;
     })
     .then(passThrough((releaseType) => {
-      if (untrackedFiles()) {
-        return Promise.reject(new UncommitedChanges())
-      }
+      // if (untrackedFiles()) {
+      //   return Promise.reject(new UncommitedChanges())
+      // }
 
       // Move the files over
       shell.rm('-rf', compiled);
@@ -151,19 +151,19 @@ const applyVersion = (AppName: string, repoPath: string) => {
       shell.cp('-R', `${tmp}/*`, compiled)
       shell.rm('-rf', tmp);
     }))
-    .then(passThrough(() => {
-      // Commit the compile step
-      shell.exec(`git add ${compiled}`);
-      shell.exec(`git commit -m 'Beetlejuice Commit: Source Compiled.'`);
-    }))
-    .then((releaseType) => {
-      // Apply the version, by using `npm version` which creates a commit and a relese tag
-      return shell.exec(`npm version ${releaseType}`);
-    })
-    .then(() => {
-      // Deploy the copmiled changes (by pushing to git repo to its remote origin)
-      return shell.exec('git push origin master; git push --tags');
-    });
+    // .then(passThrough(() => {
+    //   // Commit the compile step
+    //   shell.exec(`git add ${compiled}`);
+    //   shell.exec(`git commit -m 'Beetlejuice Commit: Source Compiled.'`);
+    // }))
+    // .then((releaseType) => {
+    //   // Apply the version, by using `npm version` which creates a commit and a relese tag
+    //   return shell.exec(`npm version ${releaseType}`);
+    // })
+    // .then(() => {
+    //   // Deploy the copmiled changes (by pushing to git repo to its remote origin)
+    //   return shell.exec('git push origin master; git push --tags');
+    // });
 }
 
 commander

@@ -13,7 +13,7 @@ var compileTpl = R.curry(function (matchers, content) {
 exports.generate = function (appName) {
     var dirPath = __dirname + '/../../SDKTemplates/typescript';
     var compile = compileTpl({
-        '{{=APP_NAME}}': appName,
+        '__SAMPLE__': appName,
     });
     return Promise.all([
         util_1.readFile(dirPath + '/typescript.d.ts.tpl').then(compile),
