@@ -7,7 +7,7 @@ export const getModel = () => <__SAMPLE__>json;
 // to take out
 // const versionsJSON = require('./versions.sample.json');
 const __CURRENT_VERSION__ = '2.0.0';
-const __ENDPOINT_URL__ = 'https://raw.githubusercontent.com/GabrielCTroia/beetlejuice-sample-repo1';
+const __ENDPOINT_URL__ = 'https://rawgit.com/GabrielCTroia/beetlejuice-sample-repo1';
 
 
 const window: any = global;
