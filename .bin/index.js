@@ -78,9 +78,12 @@ commander
     .option('--out [out]', 'Output directory path')
     .action(command_generateTypes);
 var command_generateClientSDK = function (appName, options) {
-    if (options === void 0) { options = {}; }
     return Promise
-        .resolve(GenerateClientSDK_1.generateClientSDKs(appName))
+        .resolve(GenerateClientSDK_1.generateClientSDKs({
+        appName: appName,
+        endpointBaseUrl: options.endpointBaseUrl,
+        repoVersion: options.repoVersion,
+    }))
         .then(function (_a) {
         var typescript = _a[0];
         var dts = typescript[0], js = typescript[1];
@@ -138,7 +141,9 @@ var applyVersion = function (AppName, repoPath) {
 };
 commander
     .command('generate-client-sdks <AppName>')
-    .option('--out', 'Output directory path')
+    .option('--out [out]', 'Output directory path')
+    .option('--repo-version <repoVersion>', 'Repo Version')
+    .option('--endpoint-base-url <endpointBaseUrl>', 'The endpoint base url')
     .action(command_generateClientSDK);
 var APP_NAME = 'MyApp';
 var command_compile = function (repoPath) {
@@ -153,15 +158,20 @@ var command_compile = function (repoPath) {
     })
         .then(function () { return command_generateJson(repoPath + "/source", { out: tmp + "/" + AppName + ".json" }); })
         .then(function () { return command_generateTypes(tmp + "/" + AppName + ".json", { out: tmp + "/" + AppName + ".d.ts" }); })
-        .then(function () { return command_generateClientSDK(AppName, { out: "" + tmp }); })
+        .then(function () { return command_compile_sdk(repoPath); })
         .then(function () { return applyVersion(AppName, repoPath); })
         .catch(function (e) { return console.error(e.message); });
 };
 var command_compile_sdk = function (repoPath) {
     var AppName = APP_NAME;
-    var compiled = repoPath + "/.bin";
+    var compiled = process.cwd() + "/" + repoPath + "/.bin";
+    var repoPackage = require(process.cwd() + "/" + repoPath + "/package.json");
     return Promise
-        .resolve(command_generateClientSDK(AppName, { out: "" + compiled }))
+        .resolve(command_generateClientSDK(AppName, {
+        out: "" + compiled,
+        repoVersion: repoPackage.version,
+        endpointBaseUrl: repoPackage.cdn,
+    }))
         .catch(function (e) { return console.error(e.message); });
 };
 commander

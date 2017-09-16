@@ -1,3 +1,4 @@
 /// <reference types="bluebird" />
 import * as Promise from 'bluebird';
-export declare const generate: (appName: string) => Promise<[string, string]>;
+import { Options } from './GenerateClientSDK';
+export declare const generate: (options: Options) => Promise<[string, string]>;

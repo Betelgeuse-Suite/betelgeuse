@@ -101,12 +101,16 @@ commander
 const command_generateClientSDK = (
   appName: string,
   options: {
+    endpointBaseUrl: string,
+    repoVersion: string,
     out?: string,
-    endpointBaseUrl?: string,
-    repoVersion?: string,
-  } = {}) => {
+  }) => {
   return Promise
-    .resolve(generateClientSDKs(appName))
+    .resolve(generateClientSDKs({
+      appName,
+      endpointBaseUrl: options.endpointBaseUrl,
+      repoVersion: options.repoVersion,
+    }))
     .then(([typescript]) => {
       const [dts, js] = typescript;
 
@@ -204,22 +208,18 @@ const command_compile = (repoPath: string) => {
     })
     .then(() => command_generateJson(`${repoPath}/source`, { out: `${tmp}/${AppName}.json` })) // => json
     .then(() => command_generateTypes(`${tmp}/${AppName}.json`, { out: `${tmp}/${AppName}.d.ts` })) // => tsd
-    .then(() => command_generateClientSDK(AppName, { out: `${tmp}` })) // => client sdks 
+    .then(() => command_compile_sdk(repoPath)) // => client sdks 
     .then(() => applyVersion(AppName, repoPath)) // => apply next version
     .catch((e: Exception) => console.error(e.message));
 }
 
 
-const command_compile_sdk  = (repoPath: string) => {
+const command_compile_sdk = (repoPath: string) => {
   // validate is beetlejuice repo
 
   const AppName = APP_NAME;
-
-  const compiled = `${repoPath}/.bin`;
-
-  const repoPackage = require(`${repoPath}/package.json`);
-
-
+  const compiled = `${process.cwd()}/${repoPath}/.bin`;
+  const repoPackage = require(`${process.cwd()}/${repoPath}/package.json`);
 
   return Promise
     .resolve(command_generateClientSDK(AppName, {

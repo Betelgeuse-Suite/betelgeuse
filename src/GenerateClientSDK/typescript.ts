@@ -2,6 +2,8 @@ import { readFile } from '../util';
 import * as Promise from 'bluebird';
 import * as R from 'ramda';
 
+import { Options } from './GenerateClientSDK';
+
 const compileTpl = R.curry((matchers: { [toFind: string]: string }, content: string) => {
   return R.reduce((result, toFind) => {
     const replaceWith = matchers[toFind];
@@ -11,12 +13,12 @@ const compileTpl = R.curry((matchers: { [toFind: string]: string }, content: str
   }, content, R.keys(matchers));
 });
 
-export const generate = (appName: string) => {
+export const generate = (options: Options) => {
   const dirPath = __dirname + '/../../SDKTemplates/typescript';
   const compile = compileTpl({
-    '__SAMPLE__': appName,
-    '__CURRENT_VERSION__': '1.2.3',
-    '__ENDPOINT_BASE_URL__': 'https://rawgit.com/GabrielCTroia/beetlejuice-sample-repo1'
+    '__SAMPLE__': options.appName,
+    '__CURRENT_VERSION__': options.repoVersion,
+    '__ENDPOINT_BASE_URL__': options.endpointBaseUrl,
   });
 
   return Promise.all([

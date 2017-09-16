@@ -1,7 +1,8 @@
 import { generate as generateTypescriptClientSDK } from './typescript';
+import { Options } from './GenerateClientSDK.d';
 
-export const generateClientSDKs = (appName: string) => {
+export const generateClientSDKs = (options: Options) => {
   return Promise.all([
-    generateTypescriptClientSDK(appName),
+    generateTypescriptClientSDK(options),
   ]);
 }

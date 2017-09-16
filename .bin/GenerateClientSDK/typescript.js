@@ -10,12 +10,12 @@ var compileTpl = R.curry(function (matchers, content) {
         return result.replace(regex, replaceWith);
     }, content, R.keys(matchers));
 });
-exports.generate = function (appName) {
+exports.generate = function (options) {
     var dirPath = __dirname + '/../../SDKTemplates/typescript';
     var compile = compileTpl({
-        '__SAMPLE__': appName,
-        '__CURRENT_VERSION__': '5.6.3',
-        '__ENDPOINT_BASE_URL__': 'asdad.com'
+        '__SAMPLE__': options.appName,
+        '__CURRENT_VERSION__': options.repoVersion,
+        '__ENDPOINT_BASE_URL__': options.endpointBaseUrl,
     });
     return Promise.all([
         util_1.readFile(dirPath + '/typescript.d.ts.tpl').then(compile),
