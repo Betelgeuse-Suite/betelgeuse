@@ -98,7 +98,13 @@ commander
 
 // Extra Step - Generate Client SDK template
 
-const command_generateClientSDK = (appName: string, options: { out?: string } = {}) => {
+const command_generateClientSDK = (
+  appName: string,
+  options: {
+    out?: string,
+    endpointBaseUrl?: string,
+    repoVersion?: string,
+  } = {}) => {
   return Promise
     .resolve(generateClientSDKs(appName))
     .then(([typescript]) => {
@@ -124,7 +130,6 @@ const command_generateClientSDK = (appName: string, options: { out?: string } = 
         console.log('Successfully generated SDKs at', options.out);
       }
     }));
-
 }
 
 const untrackedFiles = () => {
@@ -172,8 +177,10 @@ const applyVersion = (AppName: string, repoPath: string) => {
 }
 
 commander
-  .command('generate-client-sdks <AppName>')  
-  .option('--out', 'Output directory path')
+  .command('generate-client-sdks <AppName>')
+  .option('--out [out]', 'Output directory path')
+  .option('--repo-version <repoVersion>', 'Repo Version')
+  .option('--endpoint-base-url <endpointBaseUrl>', 'The endpoint base url')
   .action(command_generateClientSDK);
 
 
@@ -203,13 +210,23 @@ const command_compile = (repoPath: string) => {
 }
 
 
-const command_compile_sdk = (repoPath: string) => {
+const command_compile_sdk  = (repoPath: string) => {
+  // validate is beetlejuice repo
+
   const AppName = APP_NAME;
 
   const compiled = `${repoPath}/.bin`;
 
+  const repoPackage = require(`${repoPath}/package.json`);
+
+
+
   return Promise
-    .resolve(command_generateClientSDK(AppName, { out: `${compiled}`}))
+    .resolve(command_generateClientSDK(AppName, {
+      out: `${compiled}`,
+      repoVersion: repoPackage.version,
+      endpointBaseUrl: repoPackage.cdn,
+    }))
     // .then(() => applyVersion(AppName, repoPath)) // => apply next version
     .catch((e: Exception) => console.error(e.message));
 }
