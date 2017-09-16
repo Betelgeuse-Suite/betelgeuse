@@ -15,6 +15,8 @@ export const generate = (appName: string) => {
   const dirPath = __dirname + '/../../SDKTemplates/typescript';
   const compile = compileTpl({
     '__SAMPLE__': appName,
+    '__CURRENT_VERSION__': '\'5.6.3\'',
+    '__ENDPOINT_BASE_URL__': 'asdad.com'
   });
 
   return Promise.all([

@@ -4,11 +4,6 @@ const json = require('./__SAMPLE__.json');
 
 export const getModel = () => <__SAMPLE__>json;
 
-// UNCOMMENT IN DEV
-// const versionsJSON = require('./versions.sample.json');
-// const __CURRENT_VERSION__ = '2.0.0';
-// const __ENDPOINT_BASE_URL__ = 'https://rawgit.com/GabrielCTroia/beetlejuice-sample-repo1';
-
 
 const window: any = global;
 ((global: any, document: any, URL: string, VERSION: string) => {
@@ -107,7 +102,7 @@ const window: any = global;
   const versionsJsonURL = URL + '/master/versions.js';
 
 
-  console.log('Attempting to get', versionsJsonURL);
+  console.log('Attempting to fetch json from', versionsJsonURL);
   getJSONP(versionsJsonURL, (data) => {
     // have some validation in place
 
@@ -131,4 +126,4 @@ const window: any = global;
     }
   });
 
-})(window, window.document, __ENDPOINT_BASE_URL__, __CURRENT_VERSION__);
+})(window, window.document, '__ENDPOINT_BASE_URL__', '__CURRENT_VERSION__');

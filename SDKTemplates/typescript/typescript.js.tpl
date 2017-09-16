@@ -2,8 +2,6 @@
 exports.__esModule = true;
 var json = require('./__SAMPLE__.json');
 exports.getModel = function () { return json; };
-var __CURRENT_VERSION__ = '2.0.0';
-var __ENDPOINT_URL__ = 'https://rawgit.com/GabrielCTroia/beetlejuice-sample-repo1';
 var window = global;
 (function (global, document, URL, VERSION) {
     console.log('Current version:', VERSION);
@@ -91,4 +89,4 @@ var window = global;
             console.log('Nothing new!');
         }
     });
-})(window, window.document, __ENDPOINT_URL__, __CURRENT_VERSION__);
+})(window, window.document, __ENDPOINT_BASE_URL__, __CURRENT_VERSION__);
