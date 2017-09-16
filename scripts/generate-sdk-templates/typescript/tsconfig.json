@@ -15,8 +15,7 @@
     "inlineSources": false,
     "noImplicitThis": true,
     "alwaysStrict": true,
-    "noFallthroughCasesInSwitch": true,
-    "pretty": true
+    "noFallthroughCasesInSwitch": true
   },
   "include": [
     "./templates/**/*.ts"

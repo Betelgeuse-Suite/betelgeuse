@@ -4,10 +4,10 @@ const json = require('./__SAMPLE__.json');
 
 export const getModel = () => <__SAMPLE__>json;
 
-// to take out
+// UNCOMMENT IN DEV
 // const versionsJSON = require('./versions.sample.json');
-const __CURRENT_VERSION__ = '2.0.0';
-const __ENDPOINT_URL__ = 'https://rawgit.com/GabrielCTroia/beetlejuice-sample-repo1';
+// const __CURRENT_VERSION__ = '2.0.0';
+// const __ENDPOINT_BASE_URL__ = 'https://rawgit.com/GabrielCTroia/beetlejuice-sample-repo1';
 
 
 const window: any = global;
@@ -131,4 +131,4 @@ const window: any = global;
     }
   });
 
-})(window, window.document, __ENDPOINT_URL__, __CURRENT_VERSION__);
+})(window, window.document, __ENDPOINT_BASE_URL__, __CURRENT_VERSION__);
