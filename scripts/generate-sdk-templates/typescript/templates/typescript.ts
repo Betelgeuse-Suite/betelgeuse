@@ -77,17 +77,18 @@ const window: any = global;
   }
 
   const getJSONP = (url: string, success: (data: any) => void) => {
-    var ud = '_' + +new Date,
-      script = document.createElement('script'),
+    // var ud = '_' + +new Date,
+    var script = document.createElement('script'),
       head = document.getElementsByTagName('head')[0]
         || document.documentElement;
 
-    global[ud] = (data: any) => {
+    global['__beetlejuice__getVersions'] = (data: any) => {
       head.removeChild(script);
       success && success(data);
     };
 
-    script.src = url.replace('callback=?', 'callback=' + ud);
+    script.src = url;
+    // script.src = url.replace('callback=?', 'callback=' + ud);
     head.appendChild(script);
   }
 
@@ -103,7 +104,7 @@ const window: any = global;
   }
 
   const version = toVersion(VERSION);
-  const versionsJsonURL = URL + '/master/versions.json';
+  const versionsJsonURL = URL + '/master/versions.js';
 
 
   console.log('Attempting to get', versionsJsonURL);
