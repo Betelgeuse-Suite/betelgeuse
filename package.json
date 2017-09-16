@@ -34,6 +34,7 @@
     "lodash.isarray": "^4.0.0",
     "lodash.values": "^4.3.0",
     "mkdirp": "^0.5.1",
+    "nodejs-paths": "^1.0.3",
     "ramda": "^0.24.1",
     "semver": "^5.4.1",
     "shelljs": "^0.7.8",
@@ -49,13 +50,17 @@
   "scripts": {
     "clean:build": "rm -rf ./.bin ./build",
     "clean:tests": "rm -rf ./build_test",
+    "clean:templates": "rm -rf ./SDKTemplates",
     "clean:release": "rm -rf ./.bin",
+    "presdk-templates": "clean:templates",
+    "sdk-templates": "npm run sdk-templates:typescript",
     "sdk-templates:typescript": "ts-node ./scripts/generate-sdk-templates/typescript",
     "build": "npm run clean:build && tsc",
     "build:watch": "npm run build -- --watch",
     "test": "npm run clean:tests && tsc -p tsconfig.test.json && ava",
     "test:watch": "tsc -p tsconfig.test.json --watch & ava --watch",
     "start": "npm run test:watch",
-    "release": "npm run clean:release && tsc -p tsconfig.release.json"
+    "prerelease": "npm run clean:release",
+    "release": "tsc -p tsconfig.release.json && npm run sdk-templates:typescript"
   }
 }

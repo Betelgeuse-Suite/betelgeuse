@@ -2,7 +2,14 @@ import * as shell from 'shelljs';
 
 shell.exec(`tsc -p ${__dirname}/tsconfig.json`);
 
-shell.exec(`mv ${__dirname}/out/typescript.d.ts ${__dirname}/../../../SDKTemplates/typescript/typescript.d.ts.tpl`);
-shell.exec(`mv ${__dirname}/out/typescript.js ${__dirname}/../../../SDKTemplates/typescript/typescript.js.tpl`);
+const srcPath = `${__dirname}/tmp`;
+const destPath = `${__dirname}/../../../SDKTemplates/typescript`;
+
+shell.mkdir('-p', destPath);
+
+shell.mv(`${srcPath}/typescript.d.ts`, `${destPath}/typescript.d.ts.tpl`);
+shell.mv(`${srcPath}/typescript.js`, `${destPath}/typescript.js.tpl`);
+
+shell.rm('-rf', srcPath);
 
 shell.exec('echo Done.')
