@@ -1,6 +1,7 @@
 import * as commander from 'commander';
 import * as shell from 'shelljs';
 import * as Promise from 'bluebird';
+import * as Semver from 'semver';
 
 import { passThrough } from './util';
 import {
@@ -140,6 +141,14 @@ const untrackedFiles = () => {
   return !!shell.exec('git diff --name-only').stdout;
 }
 
+const getNextVersionNumber = (currentVersion: string, releaseType: Semver.ReleaseType | 'none') => {
+  if (releaseType === 'none') {
+    return currentVersion;
+  }
+
+  return Semver.inc(currentVersion, releaseType) || currentVersion;
+}
+
 const applyVersion = (AppName: string, repoPath: string) => {
   const tmp = `${repoPath}/tmp`;
   const compiled = `${repoPath}/.bin`;
@@ -195,9 +204,11 @@ const APP_NAME = 'MyApp';
 const command_compile = (repoPath: string) => {
   // validate is beetlejuice repo: ./source, ./compiled dir and package.json or smtg like that
   const AppName = APP_NAME;
+  const compiled = `${process.cwd()}/${repoPath}/.bin`;
+  const tmp = `${process.cwd()}/${repoPath}/tmp`;
+  const repoPackage = require(`${process.cwd()}/${repoPath}/package.json`);
 
-  const tmp = `${repoPath}/tmp`;
-  const compiled = `${repoPath}/.bin`;
+  // TODO: need to get the next semver to pass it to generateClientSDKs
 
   return Promise
     .resolve()
@@ -208,7 +219,12 @@ const command_compile = (repoPath: string) => {
     })
     .then(() => command_generateJson(`${repoPath}/source`, { out: `${tmp}/${AppName}.json` })) // => json
     .then(() => command_generateTypes(`${tmp}/${AppName}.json`, { out: `${tmp}/${AppName}.d.ts` })) // => tsd
-    .then(() => command_compile_sdk(repoPath)) // => client sdks 
+    .then(() => getReleaseTypeFromFiles(`${tmp}/${AppName}.json`, `${compiled}/${AppName}.json`))
+    .then((releaseType) => command_generateClientSDK(AppName, {
+      out: compiled,
+      repoVersion: getNextVersionNumber(repoPackage.version, releaseType),
+      endpointBaseUrl: repoPackage.cdn,
+    })) // => client sdks 
     .then(() => applyVersion(AppName, repoPath)) // => apply next version
     .catch((e: Exception) => console.error(e.message));
 }

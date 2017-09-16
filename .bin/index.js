@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var commander = require("commander");
 var shell = require("shelljs");
 var Promise = require("bluebird");
+var Semver = require("semver");
 var util_1 = require("./util");
 var Exception_1 = require("./Exception");
 var pkg = require('../package.json');
@@ -108,6 +109,12 @@ var command_generateClientSDK = function (appName, options) {
 var untrackedFiles = function () {
     return !!shell.exec('git diff --name-only').stdout;
 };
+var getNextVersionNumber = function (currentVersion, releaseType) {
+    if (releaseType === 'none') {
+        return currentVersion;
+    }
+    return Semver.inc(currentVersion, releaseType) || currentVersion;
+};
 var applyVersion = function (AppName, repoPath) {
     var tmp = repoPath + "/tmp";
     var compiled = repoPath + "/.bin";
@@ -148,8 +155,9 @@ commander
 var APP_NAME = 'MyApp';
 var command_compile = function (repoPath) {
     var AppName = APP_NAME;
-    var tmp = repoPath + "/tmp";
-    var compiled = repoPath + "/.bin";
+    var compiled = process.cwd() + "/" + repoPath + "/.bin";
+    var tmp = process.cwd() + "/" + repoPath + "/tmp";
+    var repoPackage = require(process.cwd() + "/" + repoPath + "/package.json");
     return Promise
         .resolve()
         .then(function () {
@@ -158,7 +166,12 @@ var command_compile = function (repoPath) {
     })
         .then(function () { return command_generateJson(repoPath + "/source", { out: tmp + "/" + AppName + ".json" }); })
         .then(function () { return command_generateTypes(tmp + "/" + AppName + ".json", { out: tmp + "/" + AppName + ".d.ts" }); })
-        .then(function () { return command_compile_sdk(repoPath); })
+        .then(function () { return getReleaseTypeFromFiles(tmp + "/" + AppName + ".json", compiled + "/" + AppName + ".json"); })
+        .then(function (releaseType) { return command_generateClientSDK(AppName, {
+        out: "" + compiled,
+        repoVersion: getNextVersionNumber(repoPackage.version, releaseType),
+        endpointBaseUrl: repoPackage.cdn,
+    }); })
         .then(function () { return applyVersion(AppName, repoPath); })
         .catch(function (e) { return console.error(e.message); });
 };
