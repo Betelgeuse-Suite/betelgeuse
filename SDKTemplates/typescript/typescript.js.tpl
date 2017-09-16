@@ -72,7 +72,7 @@ var window = global;
     };
     var version = toVersion(VERSION);
     var versionsJsonURL = URL + '/master/versions.js';
-    console.log('Attempting to get', versionsJsonURL);
+    console.log('Attempting to fetch json from', versionsJsonURL);
     getJSONP(versionsJsonURL, function (data) {
         console.log('Versions JSON data', data);
         var allVersions = Object
@@ -89,4 +89,4 @@ var window = global;
             console.log('Nothing new!');
         }
     });
-})(window, window.document, __ENDPOINT_BASE_URL__, __CURRENT_VERSION__);
+})(window, window.document, '__ENDPOINT_BASE_URL__', '__CURRENT_VERSION__');
