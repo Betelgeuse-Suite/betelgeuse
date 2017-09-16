@@ -1,9 +1,0 @@
-onBoarding:
-  phoneVerificationPrompt: "We've sent you a text message to verify your phone"
-  phoneVerificationSuccess: "You're in!\n It's time to get rich\n #newmoney"
-
-
-onLeaving:
-  phone: "We've sent you a text message to verify your phone"
-  tv: "You're in!\n It's time to get rich\n #newmoney"
-
