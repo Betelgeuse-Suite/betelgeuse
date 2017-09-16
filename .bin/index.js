@@ -140,8 +140,9 @@ commander
     .command('generate-client-sdks <AppName>')
     .option('--out', 'Output directory path')
     .action(command_generateClientSDK);
+var APP_NAME = 'MyApp';
 var command_compile = function (repoPath) {
-    var AppName = 'MyApp';
+    var AppName = APP_NAME;
     var tmp = repoPath + "/tmp";
     var compiled = repoPath + "/.bin";
     return Promise
@@ -156,7 +157,17 @@ var command_compile = function (repoPath) {
         .then(function () { return applyVersion(AppName, repoPath); })
         .catch(function (e) { return console.error(e.message); });
 };
+var command_compile_sdk = function (repoPath) {
+    var AppName = APP_NAME;
+    var compiled = repoPath + "/.bin";
+    return Promise
+        .resolve(command_generateClientSDK(AppName, { out: "" + compiled }))
+        .catch(function (e) { return console.error(e.message); });
+};
 commander
     .command('compile <repositoryPath>')
     .action(command_compile);
+commander
+    .command('compile-sdks <repositoryPath>')
+    .action(command_compile_sdk);
 commander.parse(process.argv);

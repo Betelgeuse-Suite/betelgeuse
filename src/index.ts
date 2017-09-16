@@ -172,15 +172,18 @@ const applyVersion = (AppName: string, repoPath: string) => {
 }
 
 commander
-  .command('generate-client-sdks <AppName>')
+  .command('generate-client-sdks <AppName>')  
   .option('--out', 'Output directory path')
   .action(command_generateClientSDK);
+
+
+const APP_NAME = 'MyApp';
 
 // The compile command takes care of:
 //  Steps 1, 2, 3 and 4 - - Apply the next version to both generated files
 const command_compile = (repoPath: string) => {
   // validate is beetlejuice repo: ./source, ./compiled dir and package.json or smtg like that
-  const AppName = 'MyApp';
+  const AppName = APP_NAME;
 
   const tmp = `${repoPath}/tmp`;
   const compiled = `${repoPath}/.bin`;
@@ -199,10 +202,25 @@ const command_compile = (repoPath: string) => {
     .catch((e: Exception) => console.error(e.message));
 }
 
+
+const command_compile_sdk = (repoPath: string) => {
+  const AppName = APP_NAME;
+
+  const compiled = `${repoPath}/.bin`;
+
+  return Promise
+    .resolve(command_generateClientSDK(AppName, { out: `${compiled}`}))
+    // .then(() => applyVersion(AppName, repoPath)) // => apply next version
+    .catch((e: Exception) => console.error(e.message));
+}
+
 commander
   .command('compile <repositoryPath>')
   .action(command_compile);
 
+commander
+  .command('compile-sdks <repositoryPath>')
+  .action(command_compile_sdk);
 
 // Step 5 - Push new files to the CDN
 // No need for it yet, as we can use the git repo for testing
