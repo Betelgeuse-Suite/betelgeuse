@@ -115,11 +115,11 @@ var getNextVersionNumber = function (currentVersion, releaseType) {
     }
     return Semver.inc(currentVersion, releaseType) || currentVersion;
 };
-var applyVersion = function (AppName, repoPath) {
+var applyVersion = function (releaseType, AppName, repoPath) {
     var tmp = repoPath + "/tmp";
     var compiled = repoPath + "/.bin";
     return Promise
-        .resolve(getReleaseTypeFromFiles(tmp + "/" + AppName + ".json", compiled + "/" + AppName + ".json"))
+        .resolve(releaseType)
         .then(function (releaseType) {
         if (releaseType === 'none') {
             return Promise.reject(new Exception_1.NoChangesException());
@@ -167,12 +167,12 @@ var command_compile = function (repoPath) {
         .then(function () { return command_generateJson(repoPath + "/source", { out: tmp + "/" + AppName + ".json" }); })
         .then(function () { return command_generateTypes(tmp + "/" + AppName + ".json", { out: tmp + "/" + AppName + ".d.ts" }); })
         .then(function () { return getReleaseTypeFromFiles(tmp + "/" + AppName + ".json", compiled + "/" + AppName + ".json"); })
-        .then(function (releaseType) { return command_generateClientSDK(AppName, {
-        out: "" + compiled,
+        .then(util_2.passThroughAwait(function (releaseType) { return command_generateClientSDK(AppName, {
+        out: tmp,
         repoVersion: getNextVersionNumber(repoPackage.version, releaseType),
         endpointBaseUrl: repoPackage.cdn,
-    }); })
-        .then(function () { return applyVersion(AppName, repoPath); })
+    }); }))
+        .then(function (releaseType) { return applyVersion(releaseType, AppName, repoPath); })
         .catch(function (e) { return console.error(e.message); });
 };
 var command_compile_sdk = function (repoPath) {
@@ -181,7 +181,7 @@ var command_compile_sdk = function (repoPath) {
     var repoPackage = require(process.cwd() + "/" + repoPath + "/package.json");
     return Promise
         .resolve(command_generateClientSDK(AppName, {
-        out: "" + compiled,
+        out: compiled,
         repoVersion: repoPackage.version,
         endpointBaseUrl: repoPackage.cdn,
     }))

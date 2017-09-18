@@ -149,12 +149,12 @@ const getNextVersionNumber = (currentVersion: string, releaseType: Semver.Releas
   return Semver.inc(currentVersion, releaseType) || currentVersion;
 }
 
-const applyVersion = (AppName: string, repoPath: string) => {
+const applyVersion = (releaseType: Semver.ReleaseType | 'none', AppName: string, repoPath: string) => {
   const tmp = `${repoPath}/tmp`;
   const compiled = `${repoPath}/.bin`;
 
   return Promise
-    .resolve(getReleaseTypeFromFiles(`${tmp}/${AppName}.json`, `${compiled}/${AppName}.json`))
+    .resolve(releaseType)
     .then((releaseType) => {
       if (releaseType === 'none') {
         return Promise.reject(new NoChangesException())
@@ -220,12 +220,12 @@ const command_compile = (repoPath: string) => {
     .then(() => command_generateJson(`${repoPath}/source`, { out: `${tmp}/${AppName}.json` })) // => json
     .then(() => command_generateTypes(`${tmp}/${AppName}.json`, { out: `${tmp}/${AppName}.d.ts` })) // => tsd
     .then(() => getReleaseTypeFromFiles(`${tmp}/${AppName}.json`, `${compiled}/${AppName}.json`))
-    .then((releaseType) => command_generateClientSDK(AppName, {
-      out: compiled,
+    .then(passThroughAwait((releaseType) => command_generateClientSDK(AppName, {
+      out: tmp,
       repoVersion: getNextVersionNumber(repoPackage.version, releaseType),
       endpointBaseUrl: repoPackage.cdn,
-    })) // => client sdks 
-    .then(() => applyVersion(AppName, repoPath)) // => apply next version
+    }))) // => client sdks 
+    .then((releaseType) => applyVersion(releaseType, AppName, repoPath)) // => apply next version
     .catch((e: Exception) => console.error(e.message));
 }
 
@@ -239,11 +239,10 @@ const command_compile_sdk = (repoPath: string) => {
 
   return Promise
     .resolve(command_generateClientSDK(AppName, {
-      out: `${compiled}`,
+      out: compiled,
       repoVersion: repoPackage.version,
       endpointBaseUrl: repoPackage.cdn,
     }))
-    // .then(() => applyVersion(AppName, repoPath)) // => apply next version
     .catch((e: Exception) => console.error(e.message));
 }
 
