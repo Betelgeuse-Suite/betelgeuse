@@ -12,10 +12,4 @@ An all-in-one solution to manage configuration and language versioning in native
 
 ## Usage
 
-- Get an output of the next concatonated build
-
-`ts-node ./src/index.ts --prev ./mocks/a|prev|*.json --src ./mocks/lang`
-
-- Generate a tsd file
-
-`ts-node src/TypeGenerator/index.ts`
+`ts-node ./src/index.ts --help`
