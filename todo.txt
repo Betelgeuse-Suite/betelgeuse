@@ -1,7 +1,18 @@
 - MINOR version not working properly??
   EDIT Sept 7, 2017: Yes, I can confirm this. It says an additino is a major while it should simply be a minor.
 
-- WIP: add types
+
+- WIP - version it
+    - create a registry of versions, which the App can read and decide if it needs to download or not
+    Edit: 09.18.2017 
+        
+        - Next Steps: - Start an Ionic App, and test the data fetching and saving on the device
+                      - Once the versioning works in Ionic, start playing around with Swift files
+
+        - Able to push refresh the versions each time based on tags and push them to #master
+        - Added a ts client sdk, that is able to fetch the versions.js from the repo through a proxy cdn.
+
+- DONE: add types
     - based on the schema, create .d.ts file, that is used at compile time
     - this file gets included in the build process, like any other dependency
     - since it's based on version, it means that it will work with multiple
@@ -13,10 +24,6 @@
     - http://pojo.sodhanalibrary.com/ or http://www.jsonschema2pojo.org/ and https://github.com/joelittlejohn/jsonschema2pojo/wiki/Getting-Started#the-command-line-interface
     
     - https://github.com/insanoid/SwiftyJSONAccelerator
-
-
-- version it
-    - create a registry of versions, which the App can read and decide if it needs to download or not
 
 - deploy to s3
     - add to circle ci
@@ -34,6 +41,9 @@ done - convert the whole thing to json
 
 
 # NOT IMPORTANT IN PHASE 1
+
+- Sept 18, 2017: Idea: What if each major version is created on a new a branch each time, so it becomes easier to push changes to older versions?!
+- Hmmm, what if master always acts as the version registry, while each major lives a seperate life on its own branch
 
 - maybe develop an SDK to integraet with the app?
 
