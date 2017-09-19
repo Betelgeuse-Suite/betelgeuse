@@ -4,9 +4,9 @@ import * as semver from 'semver';
 import { NoChangesException } from '../Exception';
 import { detectChanges } from './detectChanges';
 
-import { FileContent,  } from './Version';
+import { FileContent,  } from './Diff';
 import { ReleaseType } from 'semver';
-export * from './Version';
+export * from './Diff';
 
 
 type RawFileContent = FileContent & {

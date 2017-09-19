@@ -1,7 +1,7 @@
 import * as R from 'ramda';
 import { diff } from 'deep-diff';
 import { ReleaseType } from 'semver';
-import { FileContent } from './Version';
+import { FileContent } from './Diff';
 
 type ChangeType = { [index: string]: ReleaseType }
 type ChangeTypePriorities = { [index: string]: number };

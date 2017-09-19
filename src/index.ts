@@ -23,7 +23,8 @@ import { createFile } from './CreateFile';
 import { generateJSONFromYamlFiles } from './GenerateJSON';
 import { generateTypes } from './GenerateTypes';
 import { generateClientSDKs } from './GenerateClientSDK';
-import { getReleaseType } from './Version';
+import { getReleaseType } from './Diff';
+import { updateVesionRegistry } from './VersionsRegistry';
 
 const command_generateJson = (srcDir: string, options: { out?: string } = {}) => {
   return Promise
@@ -182,11 +183,18 @@ const applyVersion = (releaseType: Semver.ReleaseType | 'none', AppName: string,
     .then((releaseType) => {
       // Apply the version, by using `npm version` which creates a commit and a relese tag
       return shell.exec(`npm version ${releaseType}`);
-    })
-    .then(() => {
-      // Deploy the copmiled changes (by pushing to git repo to its remote origin)
-      return shell.exec('git push origin master; git push --tags');
     });
+}
+
+const deployToRepo = () => {
+  // Deploy the copmiled changes (by pushing to git repo to its remote origin)
+  return shell.exec('git push origin master; git push --tags');
+}
+
+const updateVersionRegistryAndCommit = (repoPath: string) => {
+  return Promise
+    .resolve(updateVesionRegistry(repoPath))
+    .then(() => shell.exec('git commit -m "Version registry updated"'));
 }
 
 commander
@@ -220,12 +228,14 @@ const command_compile = (repoPath: string) => {
     .then(() => command_generateJson(`${repoPath}/source`, { out: `${tmp}/${AppName}.json` })) // => json
     .then(() => command_generateTypes(`${tmp}/${AppName}.json`, { out: `${tmp}/${AppName}.d.ts` })) // => tsd
     .then(() => getReleaseTypeFromFiles(`${tmp}/${AppName}.json`, `${compiled}/${AppName}.json`))
-    .then(passThroughAwait((releaseType) => command_generateClientSDK(AppName, {
+    .then(passThroughAwait((releaseType) => command_generateClientSDK(AppName, { // => client sdks
       out: tmp,
       repoVersion: getNextVersionNumber(repoPackage.version, releaseType),
       endpointBaseUrl: repoPackage.cdn,
-    }))) // => client sdks 
+    })))
     .then((releaseType) => applyVersion(releaseType, AppName, repoPath)) // => apply next version
+    .then(() => updateVersionRegistryAndCommit(repoPath)) // update the version registry
+    .then(deployToRepo)
     .catch((e: Exception) => console.error(e.message));
 }
 
