@@ -194,7 +194,10 @@ const deployToRepo = () => {
 const updateVersionRegistryAndCommit = (repoPath: string) => {
   return Promise
     .resolve(updateVesionRegistry(repoPath))
-    .then(() => shell.exec('git commit -m "Version registry updated"'));
+    .then(() => {
+      shell.exec('git add versions.json versions.js')
+      shell.exec('git commit -m "Version registry updated"')
+    });
 }
 
 commander

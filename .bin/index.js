@@ -150,7 +150,10 @@ var deployToRepo = function () {
 var updateVersionRegistryAndCommit = function (repoPath) {
     return Promise
         .resolve(VersionsRegistry_1.updateVesionRegistry(repoPath))
-        .then(function () { return shell.exec('git commit -m "Version registry updated"'); });
+        .then(function () {
+        shell.exec('git add versions.json versions.js');
+        shell.exec('git commit -m "Version registry updated"');
+    });
 };
 commander
     .command('generate-client-sdks <AppName>')
