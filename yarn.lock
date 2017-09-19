@@ -1557,6 +1557,13 @@ getpass@^0.1.1:
   dependencies:
     assert-plus "^1.0.0"
 
+git-tags@^0.2.4:
+  version "0.2.4"
+  resolved "https://registry.yarnpkg.com/git-tags/-/git-tags-0.2.4.tgz#b24c71d5d7df8dd587a36998e9521e20dde259c5"
+  dependencies:
+    lodash "^2.4.1"
+    semver "^3.0.1"
+
 glob-base@^0.3.0:
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/glob-base/-/glob-base-0.3.0.tgz#dbb164f6221b1c0b1ccf82aea328b497df0ea3c4"
@@ -1707,6 +1714,17 @@ gulp-intercept@^0.1.0:
   resolved "https://registry.yarnpkg.com/gulp-intercept/-/gulp-intercept-0.1.0.tgz#9de45c300166c9d9d9fdcb8eeff860e9767c16df"
   dependencies:
     event-stream "~3.0.18"
+
+"gulp-json-to-tsd@https://github.com/GabrielCTroia/gulp-json-to-tsd.git":
+  version "0.9.5"
+  resolved "https://github.com/GabrielCTroia/gulp-json-to-tsd.git#fd84fbcc6854a2b41bb30aaf3490eaef3e5b4929"
+  dependencies:
+    gulp-util "^3.0.8"
+    lodash "^4.17.4"
+    lodash.isarray "^4.0.0"
+    lodash.values "^4.3.0"
+    path "^0.12.7"
+    through2 "^2.0.3"
 
 gulp-util@^3.0.0, gulp-util@^3.0.8:
   version "3.0.8"
@@ -2378,6 +2396,10 @@ lodash.values@^4.3.0:
   version "4.3.0"
   resolved "https://registry.yarnpkg.com/lodash.values/-/lodash.values-4.3.0.tgz#a3a6c2b0ebecc5c2cba1c17e6e620fe81b53d347"
 
+lodash@^2.4.1:
+  version "2.4.2"
+  resolved "https://registry.yarnpkg.com/lodash/-/lodash-2.4.2.tgz#fadd834b9683073da179b3eae6d9c0d15053f73e"
+
 lodash@^4.17.4:
   version "4.17.4"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.4.tgz#78203a4d1c328ae1d86dca6460e369b57f4055ae"
@@ -2610,6 +2632,12 @@ node-pre-gyp@^0.6.36:
     semver "^5.3.0"
     tar "^2.2.1"
     tar-pack "^3.4.0"
+
+nodejs-paths@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/nodejs-paths/-/nodejs-paths-1.0.3.tgz#90c655de3814940e57ba916d5b7f40596aa8d6b5"
+  dependencies:
+    extend "^3.0.0"
 
 nopt@^4.0.1:
   version "4.0.1"
@@ -3248,6 +3276,10 @@ semver-diff@^2.0.0:
 "semver@2 || 3 || 4 || 5", semver@^5.0.3, semver@^5.1.0, semver@^5.3.0, semver@^5.4.1:
   version "5.4.1"
   resolved "https://registry.yarnpkg.com/semver/-/semver-5.4.1.tgz#e059c09d8571f0540823733433505d3a2f00b18e"
+
+semver@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/semver/-/semver-3.0.1.tgz#720ac012515a252f91fb0dd2e99a56a70d6cf078"
 
 semver@^4.1.0:
   version "4.3.6"

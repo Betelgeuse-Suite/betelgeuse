@@ -1,3 +1,3 @@
 import { ReleaseType } from 'semver';
-import { FileContent } from './Version';
+import { FileContent } from './Diff';
 export declare const detectChanges: (a: FileContent, b: FileContent) => ReleaseType;

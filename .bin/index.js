@@ -12,7 +12,8 @@ var CreateFile_1 = require("./CreateFile");
 var GenerateJSON_1 = require("./GenerateJSON");
 var GenerateTypes_1 = require("./GenerateTypes");
 var GenerateClientSDK_1 = require("./GenerateClientSDK");
-var Version_1 = require("./Version");
+var Diff_1 = require("./Diff");
+var VersionsRegistry_1 = require("./VersionsRegistry");
 var command_generateJson = function (srcDir, options) {
     if (options === void 0) { options = {}; }
     return Promise
@@ -61,7 +62,7 @@ var getReleaseTypeFromFiles = function (nextJsonPath, prevJsonPath) {
     ])
         .then(function (_a) {
         var prev = _a[0], next = _a[1];
-        return Version_1.getReleaseType(prev, next);
+        return Diff_1.getReleaseType(prev, next);
     });
 };
 var command_getReleaseType = function (nextJsonPath, prevJsonPath) {
@@ -141,10 +142,15 @@ var applyVersion = function (releaseType, AppName, repoPath) {
     }))
         .then(function (releaseType) {
         return shell.exec("npm version " + releaseType);
-    })
-        .then(function () {
-        return shell.exec('git push origin master; git push --tags');
     });
+};
+var deployToRepo = function () {
+    return shell.exec('git push origin master; git push --tags');
+};
+var updateVersionRegistryAndCommit = function (repoPath) {
+    return Promise
+        .resolve(VersionsRegistry_1.updateVesionRegistry(repoPath))
+        .then(function () { return shell.exec('git commit -m "Version registry updated"'); });
 };
 commander
     .command('generate-client-sdks <AppName>')
@@ -173,6 +179,8 @@ var command_compile = function (repoPath) {
         endpointBaseUrl: repoPackage.cdn,
     }); }))
         .then(function (releaseType) { return applyVersion(releaseType, AppName, repoPath); })
+        .then(function () { return updateVersionRegistryAndCommit(repoPath); })
+        .then(deployToRepo)
         .catch(function (e) { return console.error(e.message); });
 };
 var command_compile_sdk = function (repoPath) {

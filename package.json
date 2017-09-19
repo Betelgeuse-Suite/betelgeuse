@@ -26,6 +26,7 @@
     "deep-diff": "^0.3.8",
     "dtsgenerator": "^0.9.5",
     "dtsmake": "^0.0.10",
+    "git-tags": "^0.2.4",
     "gulp": "^3.9.1",
     "gulp-insert": "^0.5.0",
     "gulp-intercept": "^0.1.0",
