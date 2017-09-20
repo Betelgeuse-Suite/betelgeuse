@@ -82,7 +82,7 @@ export const getModel = (): __APP_NAME__ => {
   var cached = store.getCurrent();
 
   if (cached) {
-    return cached;
+    return cached.data;
   }
 
   const json = require('./Data.json');
@@ -176,7 +176,7 @@ export const getModel = (): __APP_NAME__ => {
       });
     }
     else {
-      console.log('Nothing new! Current Version:', VERSION);
+      console.log('Nothing new! Current Version:', toString(VERSION));
     }
   });
 })(window, '__ENDPOINT_BASE_URL__', getCurrentVersion());

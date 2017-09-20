@@ -56,7 +56,7 @@ var getCurrentVersion = function () {
 exports.getModel = function () {
     var cached = store.getCurrent();
     if (cached) {
-        return cached;
+        return cached.data;
     }
     var json = require('./Data.json');
     store.update(toVersion('__CURRENT_VERSION_AT_BUILDTIME__'), json);
@@ -127,7 +127,7 @@ exports.getModel = function () {
             });
         }
         else {
-            console.log('Nothing new! Current Version:', VERSION);
+            console.log('Nothing new! Current Version:', toString(VERSION));
         }
     });
 })(window, '__ENDPOINT_BASE_URL__', getCurrentVersion());
