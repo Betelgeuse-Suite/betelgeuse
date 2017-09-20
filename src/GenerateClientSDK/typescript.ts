@@ -17,7 +17,7 @@ export const generate = (options: Options) => {
   const dirPath = __dirname + '/../../SDKTemplates/typescript';
   const compile = compileTpl({
     '__APP_NAME__': options.appName,
-    '__CURRENT_VERSION__': options.repoVersion,
+    '__CURRENT_VERSION_AT_BUILDTIME__': options.repoVersion,
     '__ENDPOINT_BASE_URL__': options.endpointBaseUrl,
   });
 

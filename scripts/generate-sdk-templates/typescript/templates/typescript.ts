@@ -4,78 +4,99 @@ type AugmentedWindow = Window & {
   __beetlejuice__getJSONP?: (data: any) => void;
 }
 
-class Store {
-  constructor(private storage: Storage) { }
+type Version = {
+  major: number;
+  minor: number;
+  patch: number;
+}
 
-  setItem(key: string, data: string) {
-    this.storage.setItem(key, data);
+const toVersion = (v: string): Version => {
+  if (isValidStringVersion(v)) {
+    throw `The given string: ${v} is not a valid version!`;
   }
 
-  getItem(key: string): string {
-    return this.storage.getItem(key) || '';
+  const [major, minor, patch] = v.split('.');
+
+  return {
+    major: Number(major),
+    minor: Number(minor),
+    patch: Number(patch),
+  };
+};
+
+const isValidStringVersion = (v: string) => {
+  const [major, minor, patch] = v.split('.');
+
+  return !(isNumeric(major) && isNumeric(minor) && isNumeric(patch));
+}
+
+function isNumeric(n: any) {
+  return !isNaN(parseFloat(n)) && isFinite(n);
+}
+
+const toString = (v: Version) => {
+  v = v || {};
+
+  return `${v.major}.${v.minor}.${v.patch}`;
+}
+
+
+class DataStore {
+
+  private KEY: '__beetlejuice__data';
+
+  constructor(private storage: Storage) { }
+
+  update(version: Version, data: Data) {
+    this.storage.setItem(this.KEY, JSON.stringify({
+      version: toString(version),
+      updated_at: (new Date()).getTime(),
+      data,
+    }));
+  }
+
+  getCurrent(): { data: Data, version: Version, updatedAt: Date } | undefined {
+    try {
+      const json = JSON.parse(this.storage.getItem(this.KEY) || '');
+      return {
+        data: <Data>json.data,
+        version: toVersion(<string>json.version),
+        updatedAt: new Date(<string>json.updated_at),
+      };
+    } catch (e) {
+      return undefined;
+    }
   }
 }
 
-const store = new Store(window.localStorage);
-
-
+const store = new DataStore(window.localStorage);
 
 export type __APP_NAME__ = Data;
 
+
+const getCurrentVersion = () => {
+  return (store.getCurrent() || { version: toVersion('__CURRENT_VERSION_AT_BUILDTIME__') }).version;
+}
+
 export const getModel = (): __APP_NAME__ => {
-  var cached = store.getItem('__beetlejuice__data');
+  var cached = store.getCurrent();
 
   if (cached) {
-    return JSON.parse(cached);
+    return cached;
   }
 
   const json = require('./Data.json');
-  store.setItem('__APP_NAME__', JSON.stringify(json));
+  store.update(toVersion('__CURRENT_VERSION_AT_BUILDTIME__'), json);
 
   return json;
 };
 
 
-((window: AugmentedWindow, URL: string, VERSION: string, APP_NAME: string) => {
-  console.log('Current version:', VERSION);
+((window: AugmentedWindow, URL: string, VERSION: Version) => {
+  console.log('Current version:', toString(VERSION));
 
   const document = window.document;
 
-  type Version = {
-    major: number;
-    minor: number;
-    patch: number;
-  }
-
-  const toVersion = (v: string): Version => {
-    if (isValidStringVersion(v)) {
-      throw `The given string: ${v} is not a valid version!`;
-    }
-
-    const [major, minor, patch] = v.split('.');
-
-    return {
-      major: Number(major),
-      minor: Number(minor),
-      patch: Number(patch),
-    };
-  };
-
-  const isValidStringVersion = (v: string) => {
-    const [major, minor, patch] = v.split('.');
-
-    return !(isNumeric(major) && isNumeric(minor) && isNumeric(patch));
-  }
-
-  function isNumeric(n: any) {
-    return !isNaN(parseFloat(n)) && isFinite(n);
-  }
-
-  const toString = (v: Version) => {
-    v = v || {};
-
-    return `${v.major}.${v.minor}.${v.patch}`;
-  }
 
   const compareVersions = (vA: Version, vB: Version) => {
     if (isEqualVersion(vA, vB)) {
@@ -104,7 +125,6 @@ export const getModel = (): __APP_NAME__ => {
   }
 
   const getJSONP = (url: string, success: (data: any) => void) => {
-    // var ud = '_' + +new Date,
     var script = document.createElement('script'),
       head = document.getElementsByTagName('head')[0]
         || document.documentElement;
@@ -115,7 +135,6 @@ export const getModel = (): __APP_NAME__ => {
     };
 
     script.src = url;
-    // script.src = url.replace('callback=?', 'callback=' + ud);
     head.appendChild(script);
   }
 
@@ -123,14 +142,12 @@ export const getModel = (): __APP_NAME__ => {
 
   const onlyNewerAndNonBreakingVersions = (vv: Version[]) => vv
     .filter((v) => {
-      return isNewerVersion(version, v) && isNonBreakingReleaseVersion(version, v)
+      return isNewerVersion(VERSION, v) && isNonBreakingReleaseVersion(VERSION, v)
     });
 
   const getBestVersion = (vv: Version[]) => {
     return sortVersionsDesc(onlyNewerAndNonBreakingVersions(vv))[0];
   }
-
-  const version = toVersion(VERSION);
 
   const versionsJsonURL = URL + '/master/versions.js';
   const getDataUrl = (version: Version) => {
@@ -155,15 +172,17 @@ export const getModel = (): __APP_NAME__ => {
     const bestVersion = getBestVersion(allVersions);
 
     if (bestVersion) {
-      console.log('Best Version:', toString(bestVersion));
-
+      console.log('New version found:', toString(bestVersion));
       console.log('Loading', getDataUrl(bestVersion));
-      getJSONP(getDataUrl(bestVersion), (data: __APP_NAME__) => {
-        console.log('New data', data);
+
+      getJSONP(getDataUrl(bestVersion), (data: Data) => {
+        console.log('Next Data', data);
+
+        store.update(bestVersion, data);
       });
     }
     else {
-      console.log('Nothing new!');
+      console.log('Nothing new! Current Version');
     }
   });
-})(window, '__ENDPOINT_BASE_URL__', '__CURRENT_VERSION__', '__APP_NAME__');
+})(window, '__ENDPOINT_BASE_URL__', getCurrentVersion());

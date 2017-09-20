@@ -14,7 +14,7 @@ exports.generate = function (options) {
     var dirPath = __dirname + '/../../SDKTemplates/typescript';
     var compile = compileTpl({
         '__APP_NAME__': options.appName,
-        '__CURRENT_VERSION__': options.repoVersion,
+        '__CURRENT_VERSION_AT_BUILDTIME__': options.repoVersion,
         '__ENDPOINT_BASE_URL__': options.endpointBaseUrl,
     });
     return Promise.all([
