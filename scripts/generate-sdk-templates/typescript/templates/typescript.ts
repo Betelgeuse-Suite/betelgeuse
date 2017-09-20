@@ -134,7 +134,7 @@ export const getModel = (): __APP_NAME__ => {
 
   const versionsJsonURL = URL + '/master/versions.js';
   const getDataUrl = (version: Version) => {
-    return `${URL}/v${toString(version)}/.bin/${APP_NAME}.js`;
+    return `${URL}/v${toString(version)}/.bin/Data.js`;
   }
 
 
