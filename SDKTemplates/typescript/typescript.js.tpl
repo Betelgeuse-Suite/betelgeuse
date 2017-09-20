@@ -25,6 +25,7 @@ var toString = function (v) {
 var DataStore = (function () {
     function DataStore(storage) {
         this.storage = storage;
+        this.KEY = '__beetlejuice__data';
     }
     DataStore.prototype.update = function (version, data) {
         this.storage.setItem(this.KEY, JSON.stringify({
@@ -113,24 +114,20 @@ exports.getModel = function () {
     };
     console.log('Attempting to fetch json from', versionsJsonURL);
     getJSONP(versionsJsonURL, function (data) {
-        console.log('Versions JSON data', data);
         var allVersions = Object
             .keys(data)
             .map(toVersion);
-        allVersions.forEach(function (v) {
-            console.log(toString(v));
-        });
         var bestVersion = getBestVersion(allVersions);
         if (bestVersion) {
             console.log('New version found:', toString(bestVersion));
             console.log('Loading', getDataUrl(bestVersion));
             getJSONP(getDataUrl(bestVersion), function (data) {
-                console.log('Next Data', data);
+                console.log('Data', toString(bestVersion), ':', data);
                 store.update(bestVersion, data);
             });
         }
         else {
-            console.log('Nothing new! Current Version');
+            console.log('Nothing new! Current Version:', VERSION);
         }
     });
 })(window, '__ENDPOINT_BASE_URL__', getCurrentVersion());

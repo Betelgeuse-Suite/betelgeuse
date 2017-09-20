@@ -43,7 +43,7 @@ const toString = (v: Version) => {
 
 class DataStore {
 
-  private KEY: '__beetlejuice__data';
+  private KEY = '__beetlejuice__data';
 
   constructor(private storage: Storage) { }
 
@@ -159,15 +159,9 @@ export const getModel = (): __APP_NAME__ => {
   getJSONP(versionsJsonURL, (data) => {
     // have some validation in place
 
-    console.log('Versions JSON data', data);
-
     const allVersions = Object
       .keys(data)
       .map(toVersion);
-
-    allVersions.forEach((v) => {
-      console.log(toString(v));
-    });
 
     const bestVersion = getBestVersion(allVersions);
 
@@ -176,13 +170,13 @@ export const getModel = (): __APP_NAME__ => {
       console.log('Loading', getDataUrl(bestVersion));
 
       getJSONP(getDataUrl(bestVersion), (data: Data) => {
-        console.log('Next Data', data);
+        console.log('Data', toString(bestVersion), ':', data);
 
         store.update(bestVersion, data);
       });
     }
     else {
-      console.log('Nothing new! Current Version');
+      console.log('Nothing new! Current Version:', VERSION);
     }
   });
 })(window, '__ENDPOINT_BASE_URL__', getCurrentVersion());
