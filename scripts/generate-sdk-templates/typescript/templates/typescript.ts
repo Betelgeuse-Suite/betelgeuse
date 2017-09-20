@@ -41,6 +41,8 @@ const toString = (v: Version) => {
 }
 
 
+const now = () => (new Date()).getTime();
+
 class DataStore {
 
   private KEY = '__beetlejuice__data';
@@ -50,7 +52,7 @@ class DataStore {
   update(version: Version, data: Data) {
     this.storage.setItem(this.KEY, JSON.stringify({
       version: toString(version),
-      updated_at: (new Date()).getTime(),
+      updated_at: now(),
       data,
     }));
   }
@@ -149,7 +151,12 @@ export const getModel = (): __APP_NAME__ => {
     return sortVersionsDesc(onlyNewerAndNonBreakingVersions(vv))[0];
   }
 
-  const versionsJsonURL = URL + '/master/versions.js';
+  const cacheTimestamp = (seconds: number) => {
+    // return a different timestamp per minute, which
+    return '?at=' + Math.floor(now() / (seconds * 1000));
+  }
+
+  const versionsJsonURL = URL + '/master/versions.js' + cacheTimestamp(60);
   const getDataUrl = (version: Version) => {
     return `${URL}/v${toString(version)}/.bin/Data.js`;
   }

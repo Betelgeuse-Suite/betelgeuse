@@ -22,6 +22,7 @@ var toString = function (v) {
     v = v || {};
     return v.major + "." + v.minor + "." + v.patch;
 };
+var now = function () { return (new Date()).getTime(); };
 var DataStore = (function () {
     function DataStore(storage) {
         this.storage = storage;
@@ -30,7 +31,7 @@ var DataStore = (function () {
     DataStore.prototype.update = function (version, data) {
         this.storage.setItem(this.KEY, JSON.stringify({
             version: toString(version),
-            updated_at: (new Date()).getTime(),
+            updated_at: now(),
             data: data
         }));
     };
@@ -108,7 +109,10 @@ exports.getModel = function () {
     var getBestVersion = function (vv) {
         return sortVersionsDesc(onlyNewerAndNonBreakingVersions(vv))[0];
     };
-    var versionsJsonURL = URL + '/master/versions.js';
+    var cacheTimestamp = function (seconds) {
+        return '?at=' + Math.floor(now() / (seconds * 1000));
+    };
+    var versionsJsonURL = URL + '/master/versions.js' + cacheTimestamp(60);
     var getDataUrl = function (version) {
         return URL + "/v" + toString(version) + "/.bin/Data.js";
     };
