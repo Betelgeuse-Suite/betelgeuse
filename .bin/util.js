@@ -27,17 +27,19 @@ exports.jsonToObj = function (s) {
 exports.objToJson = function (o) {
     return beautify(JSON.stringify(o));
 };
-exports.writeFile = function (path, content) { return new Promise(function (resolve, reject) {
-    fs.writeFile(path, content, function (err) {
-        if (err) {
-            reject(err);
-        }
-        else {
-            resolve();
-        }
-    });
-})
-    .then(function () { return undefined; }); };
+exports.writeFile = function (path, content) {
+    return new Promise(function (resolve, reject) {
+        fs.writeFile(path, content, function (err) {
+            if (err) {
+                reject(err);
+            }
+            else {
+                resolve();
+            }
+        });
+    })
+        .then(function () { return undefined; });
+};
 exports.readFiles = function (dirname, onDone, onError) {
     var files = [];
     if (dirname && dirname.slice(-1) !== '/') {
@@ -95,4 +97,5 @@ exports.passThrough = function (fn) { return function (arg) {
 exports.passThroughAwait = function (fn) { return function (arg) {
     return Promise.resolve(fn.call(fn, arg)).then(function () { return arg; });
 }; };
+exports.jsonToJSONP = function (json) { return "__beetlejuice__getJSONP(" + json + ");"; };
 exports.now = function () { return new Date().getTime(); };

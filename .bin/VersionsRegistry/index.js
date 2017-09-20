@@ -28,7 +28,7 @@ var getFileContentJSON = function (vv) {
     return R.pipe(JSON.stringify, beautify)(vv);
 };
 var getFileContentJS = function (vv) {
-    return R.pipe(getFileContentJSON, function (json) { return "__beetlejuice__getVersions(" + json + ");"; })(vv);
+    return R.pipe(getFileContentJSON, util_1.jsonToJSONP)(vv);
 };
 exports.updateVesionRegistry = function (repoPath) {
     var versionFiles = {

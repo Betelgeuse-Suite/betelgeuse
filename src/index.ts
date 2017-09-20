@@ -17,6 +17,7 @@ import {
   jsonToObj,
   passThroughAwait,
   writeFile,
+  jsonToJSONP,
 } from './util';
 import { createFile } from './CreateFile';
 
@@ -37,7 +38,7 @@ const command_generateJson = (srcDir: string, options: { out?: string } = {}) =>
 
       return Promise.all([
         createFile(`${options.out}/Data.json`, json),
-        createFile(`${options.out}/Data.js`, json),
+        createFile(`${options.out}/Data.js`, jsonToJSONP(json)),
       ]);
     })
     .then(passThrough(() => {

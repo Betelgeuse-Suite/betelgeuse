@@ -1,5 +1,5 @@
 declare namespace Beetlejuice {
-  interface __APP_NAME__ {
+  interface Data {
     // Empty on purpose
   }
 }

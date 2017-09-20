@@ -1,7 +1,27 @@
 "use strict";
 exports.__esModule = true;
-var json = require('./__APP_NAME__.json');
-exports.getModel = function () { return json; };
+var Store = (function () {
+    function Store(storage) {
+        this.storage = storage;
+    }
+    Store.prototype.setItem = function (key, data) {
+        this.storage.setItem(key, data);
+    };
+    Store.prototype.getItem = function (key) {
+        return this.storage.getItem(key) || '';
+    };
+    return Store;
+}());
+var store = new Store(window.localStorage);
+exports.getModel = function () {
+    var cached = store.getItem('__beetlejuice__data');
+    if (cached) {
+        return JSON.parse(cached);
+    }
+    var json = require('./Data.json');
+    store.setItem('__APP_NAME__', JSON.stringify(json));
+    return json;
+};
 (function (window, URL, VERSION, APP_NAME) {
     console.log('Current version:', VERSION);
     var document = window.document;
@@ -96,7 +116,4 @@ exports.getModel = function () { return json; };
             console.log('Nothing new!');
         }
     });
-    var saveData = function (key, data) {
-        window.localStorage.setItem(key, data);
-    };
 })(window, '__ENDPOINT_BASE_URL__', '__CURRENT_VERSION__', '__APP_NAME__');

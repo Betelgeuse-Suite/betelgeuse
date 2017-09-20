@@ -1,5 +1,4 @@
-import { __APP_NAME__ } from './Data.d';
-
+import { Data } from './Data.d';
 
 type AugmentedWindow = Window & {
   __beetlejuice__getJSONP?: (data: any) => void;
@@ -20,6 +19,9 @@ class Store {
 const store = new Store(window.localStorage);
 
 
+
+export type __APP_NAME__ = Data;
+
 export const getModel = (): __APP_NAME__ => {
   var cached = store.getItem('__beetlejuice__data');
 
@@ -33,7 +35,7 @@ export const getModel = (): __APP_NAME__ => {
   return json;
 };
 
-// const window: any = global;
+
 ((window: AugmentedWindow, URL: string, VERSION: string, APP_NAME: string) => {
   console.log('Current version:', VERSION);
 

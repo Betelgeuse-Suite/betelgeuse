@@ -13,7 +13,7 @@ var compileTpl = R.curry(function (matchers, content) {
 exports.generate = function (options) {
     var dirPath = __dirname + '/../../SDKTemplates/typescript';
     var compile = compileTpl({
-        '__SAMPLE__': options.appName,
+        '__APP_NAME__': options.appName,
         '__CURRENT_VERSION__': options.repoVersion,
         '__ENDPOINT_BASE_URL__': options.endpointBaseUrl,
     });

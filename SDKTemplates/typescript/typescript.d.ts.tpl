@@ -1,2 +1,3 @@
-import { __APP_NAME__ } from './__APP_NAME__.d';
-export declare const getModel: () => __APP_NAME__;
+import { Data } from './Data.d';
+export declare type __APP_NAME__ = Data;
+export declare const getModel: () => Data;

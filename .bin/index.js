@@ -23,7 +23,10 @@ var command_generateJson = function (srcDir, options) {
             console.log(json);
             return Promise.resolve(json);
         }
-        return CreateFile_1.createFile(options.out, json);
+        return Promise.all([
+            CreateFile_1.createFile(options.out + "/Data.json", json),
+            CreateFile_1.createFile(options.out + "/Data.js", util_2.jsonToJSONP(json)),
+        ]);
     })
         .then(util_1.passThrough(function () {
         if (options.out) {
@@ -173,9 +176,9 @@ var command_compile = function (repoPath) {
         shell.rm('-rf', tmp);
         shell.mkdir(tmp);
     })
-        .then(function () { return command_generateJson(repoPath + "/source", { out: tmp + "/" + AppName + ".json" }); })
-        .then(function () { return command_generateTypes(tmp + "/" + AppName + ".json", { out: tmp + "/" + AppName + ".d.ts" }); })
-        .then(function () { return getReleaseTypeFromFiles(tmp + "/" + AppName + ".json", compiled + "/" + AppName + ".json"); })
+        .then(function () { return command_generateJson(repoPath + "/source", { out: "" + tmp }); })
+        .then(function () { return command_generateTypes(tmp + "/Data.json", { out: tmp + "/Data.d.ts" }); })
+        .then(function () { return getReleaseTypeFromFiles(tmp + "/Data.json", compiled + "/Data.json"); })
         .then(util_2.passThroughAwait(function (releaseType) { return command_generateClientSDK(AppName, {
         out: tmp,
         repoVersion: getNextVersionNumber(repoPackage.version, releaseType),

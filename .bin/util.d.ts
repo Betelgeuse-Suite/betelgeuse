@@ -13,4 +13,5 @@ export declare const readFiles: (dirname: string, onDone: (...args: any[]) => vo
 export declare const makeDirRecursively: (path: string) => Promise<{}>;
 export declare const passThrough: <T>(fn: (a: T) => void) => (arg: T) => Promise<T>;
 export declare const passThroughAwait: <T>(fn: (a: T) => void) => (arg: T) => Promise<T>;
+export declare const jsonToJSONP: (json: string) => string;
 export declare const now: () => number;

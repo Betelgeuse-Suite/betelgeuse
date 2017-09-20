@@ -1,7 +1,12 @@
 import * as shell from 'shelljs';
 const gitTags = require('git-tags');
 import * as Promise from 'bluebird';
-import { readFile, writeFile, passThrough } from '../util';
+import {
+  readFile,
+  writeFile,
+  passThrough,
+  jsonToJSONP,
+} from '../util';
 import * as R from 'ramda';
 import * as beautify from 'js-beautify';
 
@@ -39,7 +44,7 @@ const getFileContentJSON = (vv: Versions) => {
 const getFileContentJS = (vv: Versions) => {
   return R.pipe(
     getFileContentJSON,
-    (json: string) => `__beetlejuice__getJSONP(${json});`,
+    jsonToJSONP,
   )(vv);
 }
 
