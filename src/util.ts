@@ -32,16 +32,17 @@ export const objToJson = (o: Object): string => {
   return beautify(JSON.stringify(o));
 }
 
-export const writeFile = (path: string, content: string) => new Promise((resolve, reject) => {
-  fs.writeFile(path, content, (err) => {
-    if (err) {
-      reject(err);
-    } else {
-      resolve();
-    }
+export const writeFile = (path: string, content: string) =>
+  new Promise((resolve, reject) => {
+    fs.writeFile(path, content, (err) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve();
+      }
+    })
   })
-})
-  .then(() => undefined);
+    .then(() => undefined);
 
 export type ReadFile = {
   path: string;

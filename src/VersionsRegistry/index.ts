@@ -39,7 +39,7 @@ const getFileContentJSON = (vv: Versions) => {
 const getFileContentJS = (vv: Versions) => {
   return R.pipe(
     getFileContentJSON,
-    (json: string) => `__beetlejuice__getVersions(${json});`,
+    (json: string) => `__beetlejuice__getJSONP(${json});`,
   )(vv);
 }
 

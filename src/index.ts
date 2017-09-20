@@ -29,13 +29,16 @@ import { updateVesionRegistry } from './VersionsRegistry';
 const command_generateJson = (srcDir: string, options: { out?: string } = {}) => {
   return Promise
     .resolve(generateJSONFromYamlFiles(srcDir))
-    .then((json) => {
+    .then((json: any) => { // don't why is complaining if I leave it as string
       if (typeof options.out !== 'string') {
         console.log(json);
         return Promise.resolve(json);
       }
 
-      return createFile(options.out, json);
+      return Promise.all([
+        createFile(`${options.out}/Data.json`, json),
+        createFile(`${options.out}/Data.js`, json),
+      ]);
     })
     .then(passThrough(() => {
       if (options.out) {
@@ -228,9 +231,9 @@ const command_compile = (repoPath: string) => {
       shell.rm('-rf', tmp);
       shell.mkdir(tmp);
     })
-    .then(() => command_generateJson(`${repoPath}/source`, { out: `${tmp}/${AppName}.json` })) // => json
-    .then(() => command_generateTypes(`${tmp}/${AppName}.json`, { out: `${tmp}/${AppName}.d.ts` })) // => tsd
-    .then(() => getReleaseTypeFromFiles(`${tmp}/${AppName}.json`, `${compiled}/${AppName}.json`))
+    .then(() => command_generateJson(`${repoPath}/source`, { out: `${tmp}` })) // => json
+    .then(() => command_generateTypes(`${tmp}/Data.json`, { out: `${tmp}/Data.d.ts` })) // => tsd
+    .then(() => getReleaseTypeFromFiles(`${tmp}/Data.json`, `${compiled}/Data.json`))
     .then(passThroughAwait((releaseType) => command_generateClientSDK(AppName, { // => client sdks
       out: tmp,
       repoVersion: getNextVersionNumber(repoPackage.version, releaseType),

@@ -1,10 +1,10 @@
 "use strict";
 exports.__esModule = true;
-var json = require('./__SAMPLE__.json');
+var json = require('./__APP_NAME__.json');
 exports.getModel = function () { return json; };
-var window = global;
-(function (global, document, URL, VERSION) {
+(function (window, URL, VERSION, APP_NAME) {
     console.log('Current version:', VERSION);
+    var document = window.document;
     var toVersion = function (v) {
         if (isValidStringVersion(v)) {
             throw "The given string: " + v + " is not a valid version!";
@@ -52,7 +52,7 @@ var window = global;
     var getJSONP = function (url, success) {
         var script = document.createElement('script'), head = document.getElementsByTagName('head')[0]
             || document.documentElement;
-        global['__beetlejuice__getVersions'] = function (data) {
+        window.__beetlejuice__getJSONP = function (data) {
             head.removeChild(script);
             success && success(data);
         };
@@ -72,6 +72,9 @@ var window = global;
     };
     var version = toVersion(VERSION);
     var versionsJsonURL = URL + '/master/versions.js';
+    var getDataUrl = function (version) {
+        return URL + "/v" + toString(version) + "/.bin/" + APP_NAME + ".js";
+    };
     console.log('Attempting to fetch json from', versionsJsonURL);
     getJSONP(versionsJsonURL, function (data) {
         console.log('Versions JSON data', data);
@@ -84,9 +87,16 @@ var window = global;
         var bestVersion = getBestVersion(allVersions);
         if (bestVersion) {
             console.log('Best Version:', toString(bestVersion));
+            console.log('Loading', getDataUrl(bestVersion));
+            getJSONP(getDataUrl(bestVersion), function (data) {
+                console.log('New data', data);
+            });
         }
         else {
             console.log('Nothing new!');
         }
     });
-})(window, window.document, '__ENDPOINT_BASE_URL__', '__CURRENT_VERSION__');
+    var saveData = function (key, data) {
+        window.localStorage.setItem(key, data);
+    };
+})(window, '__ENDPOINT_BASE_URL__', '__CURRENT_VERSION__', '__APP_NAME__');

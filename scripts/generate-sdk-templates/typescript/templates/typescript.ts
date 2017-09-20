@@ -1,13 +1,43 @@
-import { __SAMPLE__ } from './__SAMPLE__.d';
-
-const json = require('./__SAMPLE__.json');
-
-export const getModel = () => <__SAMPLE__>json;
+import { __APP_NAME__ } from './Data.d';
 
 
-const window: any = global;
-((global: any, document: any, URL: string, VERSION: string) => {
+type AugmentedWindow = Window & {
+  __beetlejuice__getJSONP?: (data: any) => void;
+}
+
+class Store {
+  constructor(private storage: Storage) { }
+
+  setItem(key: string, data: string) {
+    this.storage.setItem(key, data);
+  }
+
+  getItem(key: string): string {
+    return this.storage.getItem(key) || '';
+  }
+}
+
+const store = new Store(window.localStorage);
+
+
+export const getModel = (): __APP_NAME__ => {
+  var cached = store.getItem('__beetlejuice__data');
+
+  if (cached) {
+    return JSON.parse(cached);
+  }
+
+  const json = require('./Data.json');
+  store.setItem('__APP_NAME__', JSON.stringify(json));
+
+  return json;
+};
+
+// const window: any = global;
+((window: AugmentedWindow, URL: string, VERSION: string, APP_NAME: string) => {
   console.log('Current version:', VERSION);
+
+  const document = window.document;
 
   type Version = {
     major: number;
@@ -77,7 +107,7 @@ const window: any = global;
       head = document.getElementsByTagName('head')[0]
         || document.documentElement;
 
-    global['__beetlejuice__getVersions'] = (data: any) => {
+    window.__beetlejuice__getJSONP = (data: any) => {
       head.removeChild(script);
       success && success(data);
     };
@@ -99,7 +129,11 @@ const window: any = global;
   }
 
   const version = toVersion(VERSION);
+
   const versionsJsonURL = URL + '/master/versions.js';
+  const getDataUrl = (version: Version) => {
+    return `${URL}/v${toString(version)}/.bin/${APP_NAME}.js`;
+  }
 
 
   console.log('Attempting to fetch json from', versionsJsonURL);
@@ -120,10 +154,14 @@ const window: any = global;
 
     if (bestVersion) {
       console.log('Best Version:', toString(bestVersion));
+
+      console.log('Loading', getDataUrl(bestVersion));
+      getJSONP(getDataUrl(bestVersion), (data: __APP_NAME__) => {
+        console.log('New data', data);
+      });
     }
     else {
       console.log('Nothing new!');
     }
   });
-
-})(window, window.document, '__ENDPOINT_BASE_URL__', '__CURRENT_VERSION__');
+})(window, '__ENDPOINT_BASE_URL__', '__CURRENT_VERSION__', '__APP_NAME__');

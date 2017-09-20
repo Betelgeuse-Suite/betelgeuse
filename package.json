@@ -53,7 +53,7 @@
     "clean:tests": "rm -rf ./build_test",
     "clean:templates": "rm -rf ./SDKTemplates",
     "clean:release": "rm -rf ./.bin",
-    "presdk-templates": "clean:templates",
+    "presdk-templates": "npm run clean:templates",
     "sdk-templates": "npm run sdk-templates:typescript",
     "sdk-templates:typescript": "ts-node ./scripts/generate-sdk-templates/typescript",
     "build": "npm run clean:build && tsc",
