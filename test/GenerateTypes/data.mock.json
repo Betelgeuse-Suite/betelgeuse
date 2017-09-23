@@ -5,7 +5,7 @@
   "aTrueBoolean": false,
   "aNull": null,
   "anUndefined": null,
-  "anIntegerNumber": "just a number",
+  "anIntegerNumber": 4,
   "aDecimalNumber": 0.123123,
   "aDoubleNumber": 0.897982,
   "aFloatNumber": 0.09823,
