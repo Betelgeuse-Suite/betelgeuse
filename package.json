@@ -8,6 +8,7 @@
   "license": "MIT",
   "dependencies": {
     "@types/bluebird": "^3.5.8",
+    "@types/chai": "^4.0.4",
     "@types/cli-color": "^0.3.29",
     "@types/commander": "^2.9.2",
     "@types/deep-diff": "^0.0.31",
@@ -15,6 +16,7 @@
     "@types/gulp-insert": "^0.5.6",
     "@types/js-beautify": "^0.0.31",
     "@types/mkdirp": "^0.5.1",
+    "@types/mocha": "^2.2.43",
     "@types/node": "^8.0.26",
     "@types/ramda": "^0.24.9",
     "@types/semver": "^5.4.0",
@@ -42,11 +44,10 @@
     "yamljs": "^0.3.0"
   },
   "devDependencies": {
-    "ava": "^0.22.0"
-  },
-  "ava": {
-    "failFast": true,
-    "tap": false
+    "mocha": "^3.5.3",
+    "typescript": "^2.5.2",
+    "ts-node": "^3.3.0",
+    "chai": "^4.1.2"
   },
   "scripts": {
     "clean:build": "rm -rf ./.bin ./build",
@@ -58,8 +59,8 @@
     "sdk-templates:typescript": "ts-node ./scripts/generate-sdk-templates/typescript",
     "build": "npm run clean:build && tsc",
     "build:watch": "npm run build -- --watch",
-    "test": "npm run clean:tests && tsc -p tsconfig.test.json && ava",
-    "test:watch": "tsc -p tsconfig.test.json --watch & ava --watch",
+    "test": "mocha -r ts-node/register ./test/**/*.test.ts",
+    "test:watch": "npm run test -- --watch-extensions ts --watch -R min",
     "start": "npm run test:watch",
     "prerelease": "npm run clean:release",
     "release": "tsc -p tsconfig.release.json && npm run sdk-templates:typescript"
