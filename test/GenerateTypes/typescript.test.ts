@@ -10,7 +10,7 @@ const toNull = toType('null | undefined');
 const toUndefined = toNull;
 
 
-describe('GenerateTypes', () => {
+describe('GenerateTypes:Typescript', () => {
 
   it('works with primitives', () => {
     return generate({
@@ -26,10 +26,10 @@ describe('GenerateTypes', () => {
               toString('aString'),
               toString('anEmptyString'),
               toBoolean('aFalseBoolean'),
-              toBoolean('aTrueBooleanss'),
+              toBoolean('aTrueBoolean'),
               toNull('aNull'),
               toNull('anUndefined'),
-              toNumber('anIntegerNumberss'),
+              toNumber('anIntegerNumber'),
               toNumber('aDecimalNumber'),
               toNumber('aDoubleNumber'),
               toNumber('aFloatNumber'),
