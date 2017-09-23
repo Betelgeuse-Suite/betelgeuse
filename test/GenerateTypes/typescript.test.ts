@@ -3,21 +3,6 @@ import * as R from 'ramda';
 import { generate } from '../../src/GenerateTypes/typescript';
 import { indent } from './util';
 
-// Redefine it here, in case the src/toType breaks, this will catch it
-export const toType = R.curry((
-  type: string,
-  key: string,
-) => {
-  return `"${key}": ${type};`
-});
-
-const toBoolean = toType('boolean');
-const toString = toType('string');
-const toNumber = toType('number');
-const toNull = toType('null | undefined');
-const toUndefined = toNull;
-
-
 describe('GenerateTypes:Typescript', () => {
 
   it('works with primitives', () => {

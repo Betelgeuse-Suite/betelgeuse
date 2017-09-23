@@ -7,32 +7,6 @@ import { indent } from './util';
 
 const primitivesJson = require('./data.primitives.mock.json');
 
-// Redefine it here, in case the src/toType breaks, this will catch it
-const toTypeDeclaration = R.curry((
-  type: string,
-  key: string,
-) => {
-  return `public let ${key}: ${type}`;
-});
-
-const toBoolDeclaration = toTypeDeclaration('Bool');
-const toStringDeclaration = toTypeDeclaration('String');
-const toIntDeclaration = toTypeDeclaration('Int');
-const toVoidDeclaration = toTypeDeclaration('Void');
-
-const toAsignment = R.curry((
-  type: string,
-  key: string,
-) => {
-  return `self.${key} = jsonData[\"${key}\"] as! ${type}`
-});
-
-const toBoolAsignment = toAsignment('Bool');
-const toStringAsignment = toAsignment('String');
-const toIntAsignment = toAsignment('Int');
-const toVoidAsignment = toAsignment('Void');
-
-
 describe('GenerateTypes:Swift', () => {
 
   it('works', () => {
