@@ -1,7 +1,15 @@
 import * as chai from 'chai';
 import * as R from 'ramda';
 import { generate } from '../../src/GenerateTypes/typescript';
-import { toType, indent, toMultiline } from './util';
+import { indent } from './util';
+
+// Redefine it here, in case the src/toType breaks, this will catch it
+export const toType = R.curry((
+  type: string,
+  key: string,
+) => {
+  return `"${key}": ${type};`
+});
 
 const toBoolean = toType('boolean');
 const toString = toType('string');
@@ -23,16 +31,16 @@ describe('GenerateTypes:Typescript', () => {
           indent(4)([
             'interface DataPrimitivesMock {',
             indent(4)([
-              toString('aString'),
-              toString('anEmptyString'),
-              toBoolean('aFalseBoolean'),
-              toBoolean('aTrueBoolean'),
-              toNull('aNull'),
-              toNull('anUndefined'),
-              toNumber('anIntegerNumber'),
-              toNumber('aDecimalNumber'),
-              toNumber('aDoubleNumber'),
-              toNumber('aFloatNumber'),
+              '"aString": string;',
+              '"anEmptyString": string;',
+              '"aFalseBoolean": boolean;',
+              '"aTrueBoolean": boolean;',
+              '"aNull": null | undefined;',
+              '"anUndefined": null | undefined;',
+              '"anIntegerNumber": number;',
+              '"aDecimalNumber": number;',
+              '"aDoubleNumber": number;',
+              '"aFloatNumber": number;',
             ]),
             '}',
           ]),

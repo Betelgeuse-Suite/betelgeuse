@@ -6,9 +6,7 @@ import * as beautify from 'js-beautify';
 const jsonToTsd = require('gulp-json-to-tsd');
 const intercept = require('gulp-intercept');
 
-
-const NAMESPACE_NAME = 'Beetlejuice';
-const appendTemplate = `export = ${NAMESPACE_NAME};`;
+const getAppendTemplate = (namespace: string) => `export = ${namespace};`;
 
 type GenerateOptions = {
   namespace: string;
@@ -24,7 +22,7 @@ export const generate = (o: GenerateOptions) => {
       .pipe(jsonToTsd({
         namespace: o.namespace,
       }))
-      .pipe(insert.append(appendTemplate))
+      .pipe(insert.append(getAppendTemplate(o.namespace)))
       .pipe(intercept((file: any) => {
         content = file.contents.toString();
 

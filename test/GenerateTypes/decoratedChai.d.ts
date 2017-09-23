@@ -1,5 +1,5 @@
 declare module Chai {
   interface Assertion {
-    renderAs(expected: any): Assertion;
+    renderAs(expected: string[]|string): Assertion;
   }
 }
