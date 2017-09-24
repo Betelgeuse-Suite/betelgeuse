@@ -1,3 +1,4 @@
+import * as Promise from 'bluebird';
 import { generate as generateTypescriptClientSDK } from './typescript';
 import { Options } from './GenerateClientSDK.d';
 
