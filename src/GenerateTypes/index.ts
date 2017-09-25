@@ -4,6 +4,7 @@
 import * as Promise from 'bluebird';
 import { generate as generateTSD } from './typescript';
 import { generate as generateSwift } from './swift';
+import { readFile } from '../util';
 
 export const generateTypes = (jsonPath: string) => {
   return Promise
@@ -12,10 +13,11 @@ export const generateTypes = (jsonPath: string) => {
       //   src: jsonPath,
       //   namespace: 'Beetlejuice',
       // }),
-      generateSwift({
-        src: jsonPath,
-        namespace: 'Beetlejuice',
-      }),
+      readFile(jsonPath).then((content) => {
+        return generateSwift(content, {
+          namespace: 'Beetlejuice',
+        });
+      })
     ])
     .catch((e) => {
       console.error('TypeGenerator Error', e);

@@ -6,10 +6,12 @@ import { generate } from '../../src/GenerateTypes/swift';
 import { indent } from './util';
 
 const primitivesJson = require('./data.primitives.mock.json');
+const complexJSON = require('./data.complex.mock.json');
+
 
 describe('GenerateTypes:Swift', () => {
 
-  it('works', () => {
+  it('works with primitives only', () => {
     const actual = generate(JSON.stringify(primitivesJson), {
       namespace: 'TestSwift',
     });
@@ -52,4 +54,18 @@ describe('GenerateTypes:Swift', () => {
     expect(actual).to.renderAs(expected);
   });
 
+
+  it('works with complex objects only', () => {
+    const actual = generate(JSON.stringify(complexJSON), {
+      namespace: 'TestSwift',
+    });
+
+    console.log(actual);
+
+    const expected = [
+      '',
+    ];
+
+    expect(actual).to.renderAs(expected);
+  });
 });
