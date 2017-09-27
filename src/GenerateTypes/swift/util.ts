@@ -1,6 +1,7 @@
 import * as R from 'ramda';
 import { getRandomString } from '../../util';
 import { indent, fromMultiline } from '../util';
+import { upperFirst } from 'lodash'
 
 
 export type PrimitiveTypes = 'Int' | 'String' | 'Bool' | 'Any' | 'Void';
@@ -14,6 +15,23 @@ export type AnyJSON = {
   [k: number]: string;
 }
 
+
+// copied from https://github.com/darkskyapp/string-hash/blob/master/index.js
+const hash = (str: string) => {
+  var hash = 5381,
+    i = str.length;
+
+  while (i) {
+    hash = (hash * 33) ^ str.charCodeAt(--i)
+  }
+
+  /* JavaScript does bitwise operations (like XOR, above) on 32-bit signed
+   * integers. Since we want the results to be always positive, convert the
+   * signed int to an unsigned by doing an unsigned bitshift. */
+  return hash >>> 0;
+};
+
+
 export const transform = (json: AnyJSON, className: string): string => {
   const DATA_VARIABLE_NAME = 'jsonData';
 
@@ -24,12 +42,12 @@ export const transform = (json: AnyJSON, className: string): string => {
   }
 
   const instanceProperties: InstanceProperty[] = R.map((k) => {
-    const type = getSwiftType(json[k]);
+    const type = getSwiftType(json[k], k);
 
     return {
       declaration: `public let ${k}: ${type.type}`,
       typeDefinition: type.definition,
-      assignment: !!type.definition 
+      assignment: !!type.definition
         ? `self.${k} = ${type.type}(${DATA_VARIABLE_NAME}["${k}"] as! NSDictionary)`
         : `self.${k} = ${DATA_VARIABLE_NAME}["${k}"] as! ${type.type}`,
     }
@@ -58,7 +76,7 @@ export const transform = (json: AnyJSON, className: string): string => {
 }
 
 
-export const getSwiftType = (value: any): GetSwiftType => {
+export const getSwiftType = (value: any, key: string): GetSwiftType => {
   if (value == null) {
     return {
       type: 'Void',
@@ -80,12 +98,35 @@ export const getSwiftType = (value: any): GetSwiftType => {
       definition: '',
     };
   }
+  // If array
   else if (typeof value === 'object' && typeof value.length === 'number') {
-    console.log('is array called');
-    // do nothing for now
+    if (value.length === 0) {
+      return {
+        type: '[Void]',
+        definition: '',
+      }
+    }
+
+    const arrayOfValues = <any[]>value;
+
+    const firstType = getSwiftType(arrayOfValues[0], key);
+
+    const anyType = R.any((t) => {
+      return getSwiftType(t, key).type !== firstType.type;
+    }, arrayOfValues.slice(1));
+
+    return (anyType)
+      ? {
+        type: '[Any]',
+        definition: '',
+      }
+      : {
+        type: `[${firstType.type}]`,
+        definition: firstType.definition,
+      };
   }
   else if (typeof value === 'object') {
-    const className = `CustomType_${getRandomString(5)}`
+    const className = upperFirst(key);
     return {
       type: className,
       definition: transform(value, className),
@@ -97,17 +138,3 @@ export const getSwiftType = (value: any): GetSwiftType => {
     definition: '',
   };
 }
-
-// export const toTypeDeclaration = R.curry((
-//   type: string,
-//   key: string,
-// ) => {
-//   return `public let ${key}: ${type};`
-// });
-
-// export const toValueAssignment = R.curry((
-//   type: string,
-//   value: 
-// ))
-
-

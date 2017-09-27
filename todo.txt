@@ -1,3 +1,7 @@
+- What happens when a tye changes? Currently it owuld still be a patch. 
+    But the diffing should take in account the tyes as well, because changing
+    a type is a breaking change.
+
 - MINOR version not working properly??
   EDIT Sept 7, 2017: Yes, I can confirm this. It says an additino is a major while it should simply be a minor.
 
