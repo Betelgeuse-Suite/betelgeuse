@@ -10,9 +10,6 @@ const intercept = require('gulp-intercept');
 // import { indent, fromMultiline, toMultiline } from '../util';
 import { transform } from './util';
 
-const NAMESPACE_NAME = 'Beetlejuice';
-const appendTemplate = `export = ${NAMESPACE_NAME};`;
-
 type GenerateOptions = {
   namespace: string;
   src?: string;
