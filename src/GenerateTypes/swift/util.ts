@@ -4,7 +4,7 @@ import { indent, fromMultiline } from '../util';
 import { upperFirst } from 'lodash'
 
 
-export type PrimitiveTypes = 'Int' | 'String' | 'Bool' | 'Any' | 'Void';
+export type PrimitiveTypes = 'Int' | 'Double' | 'String' | 'Bool' | 'Any' | 'NSNull';
 export type GetSwiftType = {
   type: PrimitiveTypes | string;
   definition: string;
@@ -30,6 +30,10 @@ const hash = (str: string) => {
    * signed int to an unsigned by doing an unsigned bitshift. */
   return hash >>> 0;
 };
+
+const isFloatType = (n: any) => {
+  return !!(n && typeof n === 'number' && n % 1 !== 0);
+}
 
 
 export const transform = (json: AnyJSON, className: string): string => {
@@ -77,15 +81,22 @@ export const transform = (json: AnyJSON, className: string): string => {
 
 
 export const getSwiftType = (value: any, key: string): GetSwiftType => {
-  if (value == null) {
+  if (value == null || typeof value === 'undefined') {
     return {
-      type: 'Void',
+      type: 'NSNull',
       definition: '',
     };
   } else if (typeof value === 'number') {
-    return {
-      type: 'Int',
-      definition: '',
+    if (isFloatType(value)) {
+      return {
+        type: 'Float',
+        definition: '',
+      }
+    } else {
+      return {
+        type: 'Int',
+        definition: '',
+      }
     }
   } else if (typeof value === 'string') {
     return {
@@ -102,7 +113,7 @@ export const getSwiftType = (value: any, key: string): GetSwiftType => {
   else if (typeof value === 'object' && typeof value.length === 'number') {
     if (value.length === 0) {
       return {
-        type: '[Void]',
+        type: '[NSNull]',
         definition: '',
       }
     }
