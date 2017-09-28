@@ -3,11 +3,18 @@ import { getRandomString } from '../../util';
 import { indent, fromMultiline } from '../util';
 import { upperFirst } from 'lodash'
 
+export enum TypeClass {
+  primitive,
+  array,
+  object,
+}
 
 export type PrimitiveTypes = 'Int' | 'Double' | 'String' | 'Bool' | 'Any' | 'NSNull';
-export type GetSwiftType = {
-  type: PrimitiveTypes | string;
+export type SwiftType = {
+  name: PrimitiveTypes | string;
+  class: TypeClass;
   definition: string;
+  assignment: (k: string) => string;
 }
 
 export type AnyJSON = {
@@ -35,25 +42,22 @@ const isFloatType = (n: any) => {
   return !!(n && typeof n === 'number' && n % 1 !== 0);
 }
 
+export type InstanceProperty = {
+  declaration: string;
+  assignment: string;
+  typeDefinition: string;
+}
 
+const DATA_VARIABLE_NAME = 'jsonData';
 export const transform = (json: AnyJSON, className: string): string => {
-  const DATA_VARIABLE_NAME = 'jsonData';
-
-  type InstanceProperty = {
-    declaration: string;
-    assignment: string;
-    typeDefinition?: string;
-  }
 
   const instanceProperties: InstanceProperty[] = R.map((k) => {
     const type = getSwiftType(json[k], k);
 
     return {
-      declaration: `public let ${k}: ${type.type}`,
+      declaration: `public let ${k}: ${type.name}`,
       typeDefinition: type.definition,
-      assignment: !!type.definition
-        ? `self.${k} = ${type.type}(${DATA_VARIABLE_NAME}["${k}"] as! NSDictionary)`
-        : `self.${k} = ${DATA_VARIABLE_NAME}["${k}"] as! ${type.type}`,
+      assignment: type.assignment(k),
     }
   }, R.keys(json));
 
@@ -79,73 +83,174 @@ export const transform = (json: AnyJSON, className: string): string => {
   ]).join('\n');
 }
 
+const getCommonType = (arrayOfValues: any[], key: string): SwiftType => {
+  const typeNames = R.map((itemValue) => {
+    const type = getSwiftType(itemValue, key);
 
-export const getSwiftType = (value: any, key: string): GetSwiftType => {
-  if (value == null || typeof value === 'undefined') {
+    if (type.class === TypeClass.object) {
+      return hash(R.keys(itemValue).join(''));
+    }
+    else if (type.class === TypeClass.array) {
+      console.log('yes its array');
+
+      const nestedItemValues = <any[]>itemValue;
+
+      return R.map((nestedItem) => getCommonType(nestedItem, key), nestedItemValues).join('-');
+
+      // return hash(R.map((t) => {
+      //   return getSwiftType(t, key).name
+      // }, nestedItemValues).join(''));
+    }
+
+    return type.name;
+  }, arrayOfValues);
+
+  console.log('type', typeNames);
+  console.log('')
+  console.log('')
+
+  const uniqTypeNames = R.uniqBy((t) => t, typeNames);
+
+  console.log('uniq types', uniqTypeNames)
+  console.log('---');
+  console.log('')
+
+  if (uniqTypeNames.length === 1) {
+    let type = getSwiftType(arrayOfValues[0], key);
+
+    let name = `[${[type.name]}]`;
     return {
-      type: 'NSNull',
+      name,
+      class: TypeClass.array,
+      definition: type.definition,
+      assignment: (k: string) => `self.${k} = ${DATA_VARIABLE_NAME}["${k}"] as! ${name}`,
+    }
+  }
+  else {
+    let name = `[Any]`;
+    return {
+      name,
+      class: TypeClass.array,
       definition: '',
+      assignment: (k: string) => `self.${k} = ${DATA_VARIABLE_NAME}["${k}"] as! ${name}`,
+    };
+  }
+};
+
+
+export const getSwiftType = (value: any, key: string): SwiftType => {
+  const assignPrimitives = R.curry((typeName: string, k: string) => {
+    return `self.${k} = ${DATA_VARIABLE_NAME}["${k}"] as! ${typeName}`;
+  });
+
+  if (value == null || typeof value === 'undefined') {
+    const name = 'NSNull';
+
+    return {
+      name,
+      class: TypeClass.primitive,
+      definition: '',
+      assignment: assignPrimitives(name),
     };
   } else if (typeof value === 'number') {
     if (isFloatType(value)) {
+      let name = 'Float'
+
       return {
-        type: 'Float',
+        name,
+        class: TypeClass.primitive,
         definition: '',
+        assignment: assignPrimitives(name),
       }
     } else {
+      let name = 'Int';
       return {
-        type: 'Int',
+        name,
+        class: TypeClass.primitive,
         definition: '',
+        assignment: assignPrimitives(name),
       }
     }
   } else if (typeof value === 'string') {
+    let name = 'String';
+
     return {
-      type: 'String',
+      name,
       definition: '',
+      class: TypeClass.primitive,
+      assignment: assignPrimitives(name),
     };
   } else if (typeof value === "boolean") {
+    let name = 'Bool';
+
     return {
-      type: 'Bool',
+      name,
       definition: '',
+      class: TypeClass.primitive,
+      assignment: assignPrimitives(name),
     };
   }
   // If array
   else if (typeof value === 'object' && typeof value.length === 'number') {
     if (value.length === 0) {
+      let name = '[NSNull]'
+
       return {
-        type: '[NSNull]',
+        name,
+        class: TypeClass.array,
         definition: '',
+        assignment: (k: string) => `self.${k} = ${DATA_VARIABLE_NAME}["${k}"] as! ${name}`,
       }
     }
 
-    const arrayOfValues = <any[]>value;
+    // const arrayOfValues = <any[]>value;
 
-    const firstType = getSwiftType(arrayOfValues[0], key);
 
-    const anyType = R.any((t) => {
-      return getSwiftType(t, key).type !== firstType.type;
-    }, arrayOfValues.slice(1));
 
-    return (anyType)
-      ? {
-        type: '[Any]',
-        definition: '',
-      }
-      : {
-        type: `[${firstType.type}]`,
-        definition: firstType.definition,
-      };
+    // const firstTypeHash = hash(R.keys(arrayOfValues[0]));
+
+    // const anyType = R.any((t) => {
+    //   const tType = getSwiftType(t, key).type;
+    //   console.log('tType', tType);
+    //   return t.type !== firstType.type;
+    // }, arrayOfValues.slice(1));
+
+    // console.log(key, 'anyType?', anyType);
+
+    // return {
+    //   type: ,
+    //   defi
+    // }
+
+    // return (areAllTypesIdentical(<any[]>arrayOfValues))
+    //   ? {
+    //     type: '[Any]',
+    //     definition: '',
+    //   }
+    //   : {
+    //     type: `[${firstType.type}]`,
+    //     definition: firstType.definition,
+    //   };
+
+    return getCommonType(value, key);
   }
   else if (typeof value === 'object') {
-    const className = upperFirst(key);
+    let name = upperFirst(key);
     return {
-      type: className,
-      definition: transform(value, className),
+      name,
+      class: TypeClass.object,
+      definition: transform(value, name),
+      assignment: (k: string) => `self.${k} = ${name}(${DATA_VARIABLE_NAME}["${k}"] as! NSDictionary)`,
     }
   }
+  else {
+    let name = 'Any';
 
-  return {
-    type: 'Any',
-    definition: '',
-  };
+    return {
+      name,
+      class: TypeClass.primitive,
+      definition: '',
+      assignment: assignPrimitives(name),
+    };
+  }
 }

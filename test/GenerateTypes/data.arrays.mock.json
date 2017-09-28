@@ -1,0 +1,15 @@
+{
+  "anArrayOfArraysOfIdneticalComplexCustomTypes": [
+    [
+      {
+        "aNumber": 123
+      },
+      {
+        "aNumber": 879
+      },
+      {
+        "aNumber": 234
+      }
+    ]
+  ]
+}
