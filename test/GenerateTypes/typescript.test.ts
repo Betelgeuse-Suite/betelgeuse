@@ -3,7 +3,7 @@ import * as R from 'ramda';
 import { generate } from '../../src/GenerateTypes/typescript';
 import { indent } from './util';
 
-describe('GenerateTypes:Typescript', () => {
+xdescribe('GenerateTypes:Typescript', () => {
 
   it('works with primitives', () => {
     return generate({

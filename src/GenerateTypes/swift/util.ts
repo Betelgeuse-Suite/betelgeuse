@@ -67,10 +67,15 @@ export const transform = (json: AnyJSON, className: string): string => {
     '',
     indent(4)([
       R.map((prop) => {
+        if (!prop.typeDefinition) {
+          return prop.declaration;
+        }
+
         return [
           prop.declaration,
           prop.typeDefinition,
         ].join('\n');
+
       }, instanceProperties).join('\n'),
       '',
       `init(_ ${DATA_VARIABLE_NAME}: NSDictionary) {`,
@@ -91,7 +96,7 @@ const getCommonType = (arrayOfValues: any[], key: string): SwiftType => {
       return hash(R.keys(itemValue).join(''));
     }
     else if (type.class === TypeClass.array) {
-      console.log('yes its array');
+      // console.log('yes its array');
 
       const nestedItemValues = <any[]>itemValue;
 
@@ -105,15 +110,15 @@ const getCommonType = (arrayOfValues: any[], key: string): SwiftType => {
     return type.name;
   }, arrayOfValues);
 
-  console.log('type', typeNames);
-  console.log('')
-  console.log('')
+  // console.log('type', typeNames);
+  // console.log('')
+  // console.log('')
 
   const uniqTypeNames = R.uniqBy((t) => t, typeNames);
 
-  console.log('uniq types', uniqTypeNames)
-  console.log('---');
-  console.log('')
+  // console.log('uniq types', uniqTypeNames)
+  // console.log('---');
+  // console.log('')
 
   if (uniqTypeNames.length === 1) {
     let type = getSwiftType(arrayOfValues[0], key);

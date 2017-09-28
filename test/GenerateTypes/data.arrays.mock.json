@@ -1,15 +1,15 @@
 {
   "anArrayOfArraysOfIdneticalComplexCustomTypes": [
     [
-      {
-        "aNumber": 123
-      },
-      {
+      [{
+        "string": "asd"
+      }],
+      [{
         "aNumber": 879
-      },
-      {
+      }],
+      [{
         "aNumber": 234
-      }
+      }]
     ]
   ]
 }
