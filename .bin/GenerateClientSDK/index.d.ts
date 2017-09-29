@@ -1,2 +1,4 @@
+/// <reference types="bluebird" />
 import { Options } from './GenerateClientSDK.d';
-export declare const generateClientSDKs: (options: Options) => Promise<[string, string][]>;
+import * as Promise from 'bluebird';
+export declare const generateClientSDKs: (options: Options) => Promise<[[string, string]]>;
