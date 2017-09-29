@@ -1,9 +1,8 @@
 import { expect } from 'chai';
-import { fromMultiline } from './util';
 import * as R from 'ramda';
 
+import { fromMultiline, indent } from './util';
 import { generate } from '../../src/GenerateTypes/swift';
-import { indent } from './util';
 
 
 describe('GenerateTypes:Swift', () => {
@@ -339,27 +338,13 @@ describe('GenerateTypes:Swift', () => {
       expect(actual).to.renderAs(expected);
     });
 
-    xit('works with nested arrays of different types', () => {
+    it('works with nested arrays of different types', () => {
       const data = {
         "anArrayOfArraysOfDifferentCustomTypes": [
-          [
-            [
-              {
-                "string": "asd",
-              }
-            ],
-            [
-              {
-                "aNumber": 879,
-              }
-            ],
-            [
-              {
-                "aBoolean": false
-              }
-            ]
-          ]
-        ]
+          [{ "string": "asd" }],    // [String]
+          [{ "aNumber": 879 }],     // [Int]
+          [{ "aBoolean": false }],  // [Bool]
+        ]                           // [Any]
       }
 
       const actual = generate(JSON.stringify(data), {
@@ -372,42 +357,27 @@ describe('GenerateTypes:Swift', () => {
         'class TestSwift {',
         '',
         indent(4)([
-          'public let anArrayOfArraysOfDifferentCustomTypes: [[[Any]]]',
+          'public let anArrayOfArraysOfDifferentCustomTypes: [Any]',
           '',
           'init(_ jsonData: NSDictionary) {',
           indent(4)([
-            'self.anArrayOfArraysOfDifferentCustomTypes = jsonData["anArrayOfArraysOfDifferentCustomTypes"] as! [[[Any]]]',
+            'self.anArrayOfArraysOfDifferentCustomTypes = jsonData["anArrayOfArraysOfDifferentCustomTypes"] as! [Any]',
           ]),
           '}',
         ]),
         '}',
       ];
 
-
-      console.log('actual')
-      console.log(actual)
-      console.log('expected')
-      console.log(expected.join('\n'))
-
       expect(actual).to.renderAs(expected);
     });
 
-    xit('works with nested arrays of identical primitives of different lengths', () => {
+    it('works with nested arrays of identical primitives of different lengths', () => {
       const data = {
         "aNestedArrayOfStrings": [
           [
-            [
-              "hello",
-              "goobye",
-            ],
-            [
-              "ciao",
-              "buna",
-              "sarutmana"
-            ],
-            [
-              "konichiwa",
-            ]
+            ["hello", "goobye"],
+            ["ciao", "buna", "sarutmana", "hehe"],
+            ["konichiwa"],
           ]
         ]
       }
@@ -433,15 +403,43 @@ describe('GenerateTypes:Swift', () => {
         '}',
       ];
 
-      console.log('actual')
-      console.log(actual)
-      console.log('expected')
-      console.log(expected.join('\n'))
+      expect(actual).to.renderAs(expected);
+    });
+
+    it('works with nested arrays of identical primitives of different lengths grouped individually', () => {
+      const data = {
+        "aNestedArrayOfStrings": [
+          [[["hello"], ["goobye"]]],
+          [[["ciao"], ["buna"], ["sarutmana"], ["hehe"]]],
+          [[["konichiwa"]]]
+        ]
+      }
+
+      const actual = generate(JSON.stringify(data), {
+        namespace: 'TestSwift',
+      });
+
+      const expected = [
+        'import Foundation',
+        '',
+        'class TestSwift {',
+        '',
+        indent(4)([
+          'public let aNestedArrayOfStrings: [[[[String]]]]',
+          '',
+          'init(_ jsonData: NSDictionary) {',
+          indent(4)([
+            'self.aNestedArrayOfStrings = jsonData["aNestedArrayOfStrings"] as! [[[[String]]]]',
+          ]),
+          '}',
+        ]),
+        '}',
+      ];
 
       expect(actual).to.renderAs(expected);
     });
 
-    xit('works with arrays of nested custom types already defined/used outside of the array', () => {
+    it('works with arrays of nested custom types already defined/used outside of the array', () => {
 
       const data = {
         "record": {
@@ -496,11 +494,6 @@ describe('GenerateTypes:Swift', () => {
         ]),
         '}',
       ];
-
-      console.log('actual')
-      console.log(actual)
-      console.log('expected')
-      console.log(expected.join('\n'))
 
       expect(actual).to.renderAs(expected);
     });
