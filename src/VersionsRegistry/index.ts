@@ -50,7 +50,7 @@ const getFileContentJS = (vv: Versions) => {
 
 
 export const updateVesionRegistry = (repoPath: string) => {
-  // validate is beetlejuice client repo
+  // validate is betelgeuse client repo
 
   const versionFiles = {
     js: `${repoPath}/versions.js`,

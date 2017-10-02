@@ -1,7 +1,7 @@
 import { Data } from './Data.d';
 
 type AugmentedWindow = Window & {
-  __beetlejuice__getJSONP?: (data: any) => void;
+  __betelgeuse__getJSONP?: (data: any) => void;
 }
 
 type Version = {
@@ -45,7 +45,7 @@ const now = () => (new Date()).getTime();
 
 class DataStore {
 
-  private KEY = '__beetlejuice__data';
+  private KEY = '__betelgeuse__data';
 
   constructor(private storage: Storage) { }
 
@@ -131,7 +131,7 @@ export const getModel = (): __APP_NAME__ => {
       head = document.getElementsByTagName('head')[0]
         || document.documentElement;
 
-    window.__beetlejuice__getJSONP = (data: any) => {
+    window.__betelgeuse__getJSONP = (data: any) => {
       head.removeChild(script);
       success && success(data);
     };

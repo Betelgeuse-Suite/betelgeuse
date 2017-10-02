@@ -26,7 +26,7 @@ var now = function () { return (new Date()).getTime(); };
 var DataStore = (function () {
     function DataStore(storage) {
         this.storage = storage;
-        this.KEY = '__beetlejuice__data';
+        this.KEY = '__betelgeuse__data';
     }
     DataStore.prototype.update = function (version, data) {
         this.storage.setItem(this.KEY, JSON.stringify({
@@ -91,7 +91,7 @@ exports.getModel = function () {
     var getJSONP = function (url, success) {
         var script = document.createElement('script'), head = document.getElementsByTagName('head')[0]
             || document.documentElement;
-        window.__beetlejuice__getJSONP = function (data) {
+        window.__betelgeuse__getJSONP = function (data) {
             head.removeChild(script);
             success && success(data);
         };

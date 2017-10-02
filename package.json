@@ -1,9 +1,9 @@
 {
-  "name": "beetlejuice",
+  "name": "betelgeuse",
   "version": "0.0.13",
   "description": "An all-in-one solution to manage configuration and language in native mobile apps.",
   "main": "index.js",
-  "repository": "https://github.com/GabrielCTroia/beetlejuice.git",
+  "repository": "https://github.com/GabrielCTroia/betelgeuse.git",
   "author": "Gabriel C. Troia <catalin.troia@gmail.com>",
   "license": "MIT",
   "dependencies": {

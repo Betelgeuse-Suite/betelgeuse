@@ -142,8 +142,8 @@ const command_generateClientSDK = (
       }
 
       return Promise.all([
-        writeFile(`${options.out}/beetlejuice.d.ts`, dts),
-        writeFile(`${options.out}/beetlejuice.js`, js),
+        writeFile(`${options.out}/betelgeuse.d.ts`, dts),
+        writeFile(`${options.out}/betelgeuse.js`, js),
       ])
         // return a single value, otherwise the compiler complains.
         .then(() => undefined);
@@ -195,7 +195,7 @@ const applyVersion = (releaseType: Semver.ReleaseType | 'none', AppName: string,
     .then(passThrough(() => {
       // Commit the compile step
       shell.exec(`git add ${compiled}`);
-      shell.exec(`git commit -m 'Beetlejuice Commit: Source Compiled.'`);
+      shell.exec(`git commit -m 'Betelgeuse Commit: Source Compiled.'`);
     }))
     .then((releaseType) => {
       // Apply the version, by using `npm version` which creates a commit and a relese tag
@@ -230,7 +230,7 @@ const APP_NAME = 'MyApp';
 // The compile command takes care of:
 //  Steps 1, 2, 3 and 4 - - Apply the next version to both generated files
 const command_compile = (repoPath: string) => {
-  // validate is beetlejuice repo: ./source, ./compiled dir and package.json or smtg like that
+  // validate is betelgeuse repo: ./source, ./compiled dir and package.json or smtg like that
   const AppName = APP_NAME;
   const compiled = `${process.cwd()}/${repoPath}/.bin`;
   const tmp = `${process.cwd()}/${repoPath}/tmp`;
@@ -264,7 +264,7 @@ const command_compile = (repoPath: string) => {
 
 
 const command_compile_sdk = (repoPath: string) => {
-  // validate is beetlejuice repo
+  // validate is betelgeuse repo
 
   const AppName = APP_NAME;
   const compiled = `${process.cwd()}/${repoPath}/.bin`;

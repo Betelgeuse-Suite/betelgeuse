@@ -97,7 +97,7 @@ exports.passThrough = function (fn) { return function (arg) {
 exports.passThroughAwait = function (fn) { return function (arg) {
     return Promise.resolve(fn.call(fn, arg)).then(function () { return arg; });
 }; };
-exports.jsonToJSONP = function (json) { return "__beetlejuice__getJSONP(" + json + ");"; };
+exports.jsonToJSONP = function (json) { return "__betelgeuse__getJSONP(" + json + ");"; };
 exports.now = function () { return new Date().getTime(); };
 exports.getRandomString = function (length) {
     if (length === void 0) { length = 3; }

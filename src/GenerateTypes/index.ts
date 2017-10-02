@@ -22,7 +22,7 @@ export const generateTypes = (jsonPath: string, platform: Platform) => {
       .resolve()
       .then(() => generateTSD({
         src: jsonPath,
-        namespace: 'Beetlejuice',
+        namespace: 'Betelgeuse',
       })),
   }
 

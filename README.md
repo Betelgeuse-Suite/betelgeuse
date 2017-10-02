@@ -1,4 +1,4 @@
-# Beetlejuice
+# Betelgeuse
 An all-in-one solution to manage configuration and language versioning in native mobile apps.
 
 or 

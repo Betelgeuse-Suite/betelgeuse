@@ -133,7 +133,7 @@ export const passThroughAwait = <T>(fn: (a: T) => void) => (arg: T) => {
   return Promise.resolve(fn.call(fn, arg)).then(() => arg);
 };
 
-export const jsonToJSONP = (json: string) => `__beetlejuice__getJSONP(${json});`;
+export const jsonToJSONP = (json: string) => `__betelgeuse__getJSONP(${json});`;
 
 export const now = () => new Date().getTime();
 

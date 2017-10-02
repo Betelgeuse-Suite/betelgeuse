@@ -20,7 +20,7 @@ exports.generateTypes = function (jsonPath, platform) {
             .resolve()
             .then(function () { return typescript_1.generate({
             src: jsonPath,
-            namespace: 'Beetlejuice',
+            namespace: 'Betelgeuse',
         }); }),
         _a);
     return Promise

@@ -108,8 +108,8 @@ var command_generateClientSDK = function (appName, options) {
             return;
         }
         return Promise.all([
-            util_2.writeFile(options.out + "/beetlejuice.d.ts", dts),
-            util_2.writeFile(options.out + "/beetlejuice.js", js),
+            util_2.writeFile(options.out + "/betelgeuse.d.ts", dts),
+            util_2.writeFile(options.out + "/betelgeuse.js", js),
         ])
             .then(function () { return undefined; });
     })
@@ -150,7 +150,7 @@ var applyVersion = function (releaseType, AppName, repoPath) {
     }))
         .then(util_1.passThrough(function () {
         shell.exec("git add " + compiled);
-        shell.exec("git commit -m 'Beetlejuice Commit: Source Compiled.'");
+        shell.exec("git commit -m 'Betelgeuse Commit: Source Compiled.'");
     }))
         .then(function (releaseType) {
         return shell.exec("npm version " + releaseType);
