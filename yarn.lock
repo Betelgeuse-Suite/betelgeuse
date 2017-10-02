@@ -63,6 +63,16 @@
   version "0.0.31"
   resolved "https://registry.yarnpkg.com/@types/js-beautify/-/js-beautify-0.0.31.tgz#bd3512cc8d24340b6403518cccbb2a7d550b9a55"
 
+"@types/lodash.capitalize@^4.2.3":
+  version "4.2.3"
+  resolved "https://registry.yarnpkg.com/@types/lodash.capitalize/-/lodash.capitalize-4.2.3.tgz#3a91ad84742974897cfe0b455d6abb5cc7ddf416"
+  dependencies:
+    "@types/lodash" "*"
+
+"@types/lodash@*", "@types/lodash@^4.14.76":
+  version "4.14.76"
+  resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.76.tgz#87874f766774d54e89589697340be9496fb8bf70"
+
 "@types/minimatch@*":
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/@types/minimatch/-/minimatch-3.0.1.tgz#b683eb60be358304ef146f5775db4c0e3696a550"
@@ -1241,6 +1251,10 @@ lodash._reinterpolate@^3.0.0:
 lodash._root@^3.0.0:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/lodash._root/-/lodash._root-3.0.1.tgz#fba1c4524c19ee9a5f8136b4609f017cf4ded692"
+
+lodash.capitalize@^4.2.1:
+  version "4.2.1"
+  resolved "https://registry.yarnpkg.com/lodash.capitalize/-/lodash.capitalize-4.2.1.tgz#f826c9b4e2a8511d84e3aca29db05e1a4f3b72a9"
 
 lodash.create@3.1.1:
   version "3.1.1"

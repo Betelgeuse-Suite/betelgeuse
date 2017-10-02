@@ -136,3 +136,15 @@ export const passThroughAwait = <T>(fn: (a: T) => void) => (arg: T) => {
 export const jsonToJSONP = (json: string) => `__beetlejuice__getJSONP(${json});`;
 
 export const now = () => new Date().getTime();
+
+export const getRandomString = (length: number = 3) => {
+  const lexic =
+    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  var str = '';
+
+  for (var i = 0; i < length; i++) {
+    str += lexic.charAt(Math.floor(Math.random() * lexic.length));
+  }
+
+  return str;
+};

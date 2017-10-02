@@ -2,6 +2,7 @@ import * as commander from 'commander';
 import * as shell from 'shelljs';
 import * as Promise from 'bluebird';
 import * as Semver from 'semver';
+import * as R from 'ramda';
 
 import { passThrough } from './util';
 import {
@@ -22,7 +23,7 @@ import {
 import { createFile } from './CreateFile';
 
 import { generateJSONFromYamlFiles } from './GenerateJSON';
-import { generateTypes } from './GenerateTypes';
+import { generateTypes, Platform } from './GenerateTypes';
 import { generateClientSDKs } from './GenerateClientSDK';
 import { getReleaseType } from './Diff';
 import { updateVesionRegistry } from './VersionsRegistry';
@@ -48,20 +49,24 @@ const command_generateJson = (srcDir: string, options: { out?: string } = {}) =>
     }));
 }
 
-const command_generateTypes = (jsonFilePath: string, options: { out?: string } = {}) => {
+const command_generateTypes = (
+  jsonFilePath: string,
+  platform: Platform,
+  options: { out?: string } = {},
+) => {
   return Promise
-    .resolve(generateTypes(jsonFilePath))
-    .then(passThroughAwait(([tsd]) => {
+    .resolve(generateTypes(jsonFilePath, platform))
+    .then(passThroughAwait((generated) => {
       if (typeof options.out !== 'string') {
-        console.log(tsd);
+        console.log(generated);
         return;
       }
 
-      return writeFile(options.out, tsd);
+      return writeFile(options.out, generated);
     }))
     .then(passThrough(() => {
       if (options.out) {
-        console.log('Successfully generated Typescript .tsd from', jsonFilePath, 'at', options.out);
+        console.log(`Successfully generated ${Platform[platform]} file based on`, jsonFilePath, 'at', options.out);
       }
     }));
 }
@@ -98,9 +103,17 @@ commander
 
 // Step 3 - Generate the Type file
 commander
-  .command('generate-types <jsonFilePath>')
+  .command('generate-types <jsonFilePath> <platform>')
   .option('--out [out]', 'Output directory path')
-  .action(command_generateTypes);
+  .action((jsonFilePath: string, platform: string, options: any) => {
+    if (platform === 'swift') {
+      return command_generateTypes(jsonFilePath, Platform.swift, options)
+    } else if (platform === 'typescript') {
+      return command_generateTypes(jsonFilePath, Platform.typescript, options)
+    } else {
+      console.error(`Platform ${platform} is not valid!`);
+    }
+  });
 
 // Extra Step - Generate Client SDK template
 
@@ -233,7 +246,10 @@ const command_compile = (repoPath: string) => {
       shell.mkdir(tmp);
     })
     .then(() => command_generateJson(`${repoPath}/source`, { out: `${tmp}` })) // => json
-    .then(() => command_generateTypes(`${tmp}/Data.json`, { out: `${tmp}/Data.d.ts` })) // => tsd
+    .then(() => Promise.all([
+      command_generateTypes(`${tmp}/Data.json`, Platform.typescript, { out: `${tmp}/Data.d.ts` }), // => tsd
+      command_generateTypes(`${tmp}/Data.json`, Platform.swift, { out: `${tmp}/Model.swift` }), // swift
+    ]))
     .then(() => getReleaseTypeFromFiles(`${tmp}/Data.json`, `${compiled}/Data.json`))
     .then(passThroughAwait((releaseType) => command_generateClientSDK(AppName, { // => client sdks
       out: tmp,

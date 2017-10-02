@@ -15,3 +15,4 @@ export declare const passThrough: <T>(fn: (a: T) => void) => (arg: T) => Promise
 export declare const passThroughAwait: <T>(fn: (a: T) => void) => (arg: T) => Promise<T>;
 export declare const jsonToJSONP: (json: string) => string;
 export declare const now: () => number;
+export declare const getRandomString: (length?: number) => string;

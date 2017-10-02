@@ -34,21 +34,20 @@ var command_generateJson = function (srcDir, options) {
         }
     }));
 };
-var command_generateTypes = function (jsonFilePath, options) {
+var command_generateTypes = function (jsonFilePath, platform, options) {
     if (options === void 0) { options = {}; }
     return Promise
-        .resolve(GenerateTypes_1.generateTypes(jsonFilePath))
-        .then(util_2.passThroughAwait(function (_a) {
-        var tsd = _a[0];
+        .resolve(GenerateTypes_1.generateTypes(jsonFilePath, platform))
+        .then(util_2.passThroughAwait(function (generated) {
         if (typeof options.out !== 'string') {
-            console.log(tsd);
+            console.log(generated);
             return;
         }
-        return util_2.writeFile(options.out, tsd);
+        return util_2.writeFile(options.out, generated);
     }))
         .then(util_1.passThrough(function () {
         if (options.out) {
-            console.log('Successfully generated Typescript .tsd from', jsonFilePath, 'at', options.out);
+            console.log("Successfully generated " + GenerateTypes_1.Platform[platform] + " file based on", jsonFilePath, 'at', options.out);
         }
     }));
 };
@@ -79,9 +78,19 @@ commander
     .command('get-release-type <nextJsonPath> <prevJsonPath>')
     .action(command_getReleaseType);
 commander
-    .command('generate-types <jsonFilePath>')
+    .command('generate-types <jsonFilePath> <platform>')
     .option('--out [out]', 'Output directory path')
-    .action(command_generateTypes);
+    .action(function (jsonFilePath, platform, options) {
+    if (platform === 'swift') {
+        return command_generateTypes(jsonFilePath, GenerateTypes_1.Platform.swift, options);
+    }
+    else if (platform === 'typescript') {
+        return command_generateTypes(jsonFilePath, GenerateTypes_1.Platform.typescript, options);
+    }
+    else {
+        console.error("Platform " + platform + " is not valid!");
+    }
+});
 var command_generateClientSDK = function (appName, options) {
     return Promise
         .resolve(GenerateClientSDK_1.generateClientSDKs({
@@ -177,7 +186,10 @@ var command_compile = function (repoPath) {
         shell.mkdir(tmp);
     })
         .then(function () { return command_generateJson(repoPath + "/source", { out: "" + tmp }); })
-        .then(function () { return command_generateTypes(tmp + "/Data.json", { out: tmp + "/Data.d.ts" }); })
+        .then(function () { return Promise.all([
+        command_generateTypes(tmp + "/Data.json", GenerateTypes_1.Platform.typescript, { out: tmp + "/Data.d.ts" }),
+        command_generateTypes(tmp + "/Data.json", GenerateTypes_1.Platform.swift, { out: tmp + "/Model.swift" }),
+    ]); })
         .then(function () { return getReleaseTypeFromFiles(tmp + "/Data.json", compiled + "/Data.json"); })
         .then(util_2.passThroughAwait(function (releaseType) { return command_generateClientSDK(AppName, {
         out: tmp,

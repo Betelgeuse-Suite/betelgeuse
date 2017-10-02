@@ -1,0 +1,22 @@
+{
+  "record": {
+    "aString": "hello",
+    "anInt": 24
+  },
+  "anArrayOfRecords": [
+    {
+      "aString": "hello",
+      "anInt": 24
+    },
+    {
+      "aString": "bye",
+      "anInt": 22
+    }
+  ],
+  "anArrayOfStrings": [
+    "a",
+    "b",
+    "c",
+    "d"
+  ]
+}

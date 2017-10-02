@@ -1,6 +1,10 @@
 # Beetlejuice
 An all-in-one solution to manage configuration and language versioning in native mobile apps.
 
+or 
+
+A full-blown configuration deployment service.
+
 ## Global Dependencies
 
 `npm i -g typescript`
