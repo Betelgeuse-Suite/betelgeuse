@@ -1,0 +1,98 @@
+{
+  "aString": "just a string",
+  "anEmptyString": "",
+  "aFalseBoolean": false,
+  "aTrueBoolean": false,
+  "aNull": null,
+  "anUndefined": null,
+  "anIntegerNumber": 4,
+  "aDecimalNumber": 0.123123,
+  "aDoubleNumber": 0.897982,
+  "aFloatNumber": 0.09823,
+  "aHashOfStrings": {
+    "US": "America",
+    "CA": "Canada",
+    "RO": "Romania"
+  },
+  "aNestedObjectOfSameTypes": {
+    "a": {
+      "path": {
+        "to": {
+          "a": {
+            "nested": {
+              "stringValue": "just a nested string value",
+              "numberValue": 42,
+              "booleanValue": true
+            }
+          }
+        }
+      }
+    },
+    "another": {
+      "path": {
+        "to": {
+          "a": {
+            "nested": {
+              "stringValue": "another nested string value",
+              "numberValue": 22,
+              "booleanValue": false
+            }
+          }
+        }
+      }
+    }
+  },
+  "aNestedObjectsOfDifferentTypes": {
+    "customType1": {
+      "aString": "hello",
+      "aNumber": 24
+    },
+    "customType2": {
+      "aBoolean": true
+    },
+    "customType3": {
+      "aString": "hello again"
+    }
+  },
+  "anArrayOfStrings": [
+    "hello",
+    "bon jour",
+    "sayonara",
+    "privet",
+    "buna ziua"
+  ],
+  "anArrayOfIntegers": [
+    23,
+    45,
+    18,
+    1221
+  ],
+  "anArrayOfDecimals": [
+    23.22,
+    45.89,
+    18.12,
+    1221.23231
+  ],
+  "anArrayOfIdenticalCustomTypes": [
+    {
+      "aBoolean": true,
+      "aString": "hello"
+    },
+    {
+      "aBoolean": true,
+      "aString": "good bye"
+    }
+  ],
+  "anArrayOfDifferentCustomTypes": [
+    {
+      "aBoolean": false
+    },
+    {
+      "aString": "hello"
+    },
+    {
+      "aNumber": 23,
+      "aString": "good bye"
+    }
+  ]
+}

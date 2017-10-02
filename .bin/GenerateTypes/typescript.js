@@ -6,8 +6,7 @@ var insert = require("gulp-insert");
 var beautify = require("js-beautify");
 var jsonToTsd = require('gulp-json-to-tsd');
 var intercept = require('gulp-intercept');
-var NAMESPACE_NAME = 'Beetlejuice';
-var appendTemplate = "export = " + NAMESPACE_NAME + ";";
+var getAppendTemplate = function (namespace) { return "export = " + namespace + ";"; };
 exports.generate = function (o) {
     return new Promise(function (resolve, reject) {
         var content = '';
@@ -16,7 +15,7 @@ exports.generate = function (o) {
             .pipe(jsonToTsd({
             namespace: o.namespace,
         }))
-            .pipe(insert.append(appendTemplate))
+            .pipe(insert.append(getAppendTemplate(o.namespace)))
             .pipe(intercept(function (file) {
             content = file.contents.toString();
             return file;

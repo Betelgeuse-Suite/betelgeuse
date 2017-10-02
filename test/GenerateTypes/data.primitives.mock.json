@@ -1,0 +1,10 @@
+{
+  "aString": "just a string",
+  "anEmptyString": "",
+  "aFalseBoolean": false,
+  "aTrueBoolean": false,
+  "aNull": null,
+  "anUndefined": null,
+  "anIntegerNumber": 4,
+  "aFloatNumber": 0.123123
+}
