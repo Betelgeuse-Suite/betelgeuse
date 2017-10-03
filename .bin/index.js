@@ -100,15 +100,15 @@ var command_generateClientSDK = function (appName, options) {
     }))
         .then(function (_a) {
         var typescript = _a[0];
-        var dts = typescript[0], js = typescript[1];
+        var tsd = typescript.tsd, js = typescript.js;
         if (typeof options.out !== 'string') {
-            console.log(dts);
+            console.log(tsd);
             console.log('');
             console.log(js);
             return;
         }
         return Promise.all([
-            util_2.writeFile(options.out + "/betelgeuse.d.ts", dts),
+            util_2.writeFile(options.out + "/betelgeuse.d.ts", tsd),
             util_2.writeFile(options.out + "/betelgeuse.js", js),
         ])
             .then(function () { return undefined; });

@@ -64,6 +64,6 @@
     "test:watch": "npm run test -- --watch-extensions ts --watch -R min",
     "start": "npm run test:watch",
     "prerelease": "npm run clean:release",
-    "release": "tsc -p tsconfig.release.json && npm run sdk-templates:typescript"
+    "release": "tsc -p tsconfig.release.json"
   }
 }

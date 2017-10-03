@@ -15,7 +15,6 @@ const compileTpl = R.curry((matchers: { [toFind: string]: string }, content: str
 });
 
 export const generate = (options: Options) => {
-  const dirPath = __dirname + '/../../SDKTemplates/typescript';
   const compile = compileTpl({
     '__APP_NAME__': options.appName,
     '__CURRENT_VERSION_AT_BUILDTIME__': options.repoVersion,
