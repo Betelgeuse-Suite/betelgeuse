@@ -2,6 +2,10 @@
 # yarn lockfile v1
 
 
+"@types/bluebird@^3.5.12":
+  version "3.5.12"
+  resolved "https://registry.yarnpkg.com/@types/bluebird/-/bluebird-3.5.12.tgz#180881847ff664e9e294a5dcdcd4c8e9a150e5a7"
+
 "@types/bluebird@^3.5.8":
   version "3.5.8"
   resolved "https://registry.yarnpkg.com/@types/bluebird/-/bluebird-3.5.8.tgz#242a83379f06c90f96acf6d1aeab3af6faebdb98"
@@ -248,6 +252,15 @@ bcrypt-pbkdf@^1.0.0:
 beeper@^1.0.0:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/beeper/-/beeper-1.1.1.tgz#e6d5ea8c5dad001304a70b22638447f69cb2f809"
+
+"betelgeuse-typescript-client@https://github.com/GabrielCTroia/betelgeuse-typescript-client.git", "betelgeuse-typescript-client@https://github.com/GabrielCTroia/betelgeuse-typescript-client.git#v0.0.3":
+  version "0.0.3"
+  resolved "https://github.com/GabrielCTroia/betelgeuse-typescript-client.git#0b5b1f5d5255d90be30a1328ed2625245deefa11"
+  dependencies:
+    "@types/bluebird" "^3.5.12"
+    "@types/shelljs" "^0.7.4"
+    bluebird "^3.5.0"
+    shelljs "^0.7.8"
 
 bluebird@^3.0.5, bluebird@^3.5.0:
   version "3.5.0"

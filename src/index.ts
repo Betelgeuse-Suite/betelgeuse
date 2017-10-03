@@ -131,10 +131,10 @@ const command_generateClientSDK = (
       repoVersion: options.repoVersion,
     }))
     .then(([typescript]) => {
-      const [dts, js] = typescript;
+      const { tsd, js } = typescript;
 
       if (typeof options.out !== 'string') {
-        console.log(dts);
+        console.log(tsd);
         console.log('');
         console.log(js);
 
@@ -142,7 +142,7 @@ const command_generateClientSDK = (
       }
 
       return Promise.all([
-        writeFile(`${options.out}/betelgeuse.d.ts`, dts),
+        writeFile(`${options.out}/betelgeuse.d.ts`, tsd),
         writeFile(`${options.out}/betelgeuse.js`, js),
       ])
         // return a single value, otherwise the compiler complains.

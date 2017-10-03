@@ -2,6 +2,7 @@ import { readFile } from '../util';
 import * as Promise from 'bluebird';
 import * as R from 'ramda';
 
+import { getSDKTemplates } from 'betelgeuse-typescript-client';
 import { Options } from './GenerateClientSDK';
 
 const compileTpl = R.curry((matchers: { [toFind: string]: string }, content: string) => {
@@ -21,8 +22,10 @@ export const generate = (options: Options) => {
     '__ENDPOINT_BASE_URL__': options.endpointBaseUrl,
   });
 
-  return Promise.all([
-    readFile(dirPath + '/typescript.d.ts.tpl').then(compile),
-    readFile(dirPath + '/typescript.js.tpl').then(compile),
-  ]);
+  return Promise
+    .resolve(getSDKTemplates())
+    .then(({ js, tsd }) => ({
+      tsd: compile(tsd),
+      js: compile(js),
+    }));
 }
