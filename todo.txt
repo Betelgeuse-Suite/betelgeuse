@@ -1,4 +1,6 @@
-- What happens when a tye changes? Currently it owuld still be a patch. 
+- MID: The key names in the json need to be CodeComplaint (use camelcase insteda of dashes)
+
+- MID: What happens when a type changes? Currently it would still be a patch. 
     But the diffing should take in account the tyes as well, because changing
     a type is a breaking change.
 
@@ -6,12 +8,12 @@
   EDIT Sept 7, 2017: Yes, I can confirm this. It says an additino is a major while it should simply be a minor.
 
 
-- WIP - version it
+- DONE: - version it
     - create a registry of versions, which the App can read and decide if it needs to download or not
     Edit: 09.18.2017 
         
-        - Next Steps: - Start an Ionic App, and test the data fetching and saving on the device
-                      - Once the versioning works in Ionic, start playing around with Swift files
+        - Next Steps: - Done/ Start an Ionic App, and test the data fetching and saving on the device
+                      - Done/ Once the versioning works in Ionic, start playing around with Swift files
 
         - Able to push refresh the versions each time based on tags and push them to #master
         - Added a ts client sdk, that is able to fetch the versions.js from the repo through a proxy cdn.
