@@ -28,7 +28,7 @@ describe('GenerateTypes:Swift', () => {
       const expected = [
         'import Foundation',
         '',
-        'class TestSwift {',
+        'public class TestSwift {',
         '',
         indent(4)([
           'public let aString: String',
@@ -78,11 +78,11 @@ describe('GenerateTypes:Swift', () => {
       const expected = [
         'import Foundation',
         '',
-        'class TestSwift {',
+        'public class TestSwift {',
         '',
         indent(4)([
           'public let record: Record',
-          'class Record {',
+          'public class Record {',
           '',
           indent(4)([
             'public let aString: String',
@@ -130,7 +130,7 @@ describe('GenerateTypes:Swift', () => {
       const expected = [
         'import Foundation',
         '',
-        'class TestSwift {',
+        'public class TestSwift {',
         '',
         indent(4)([
           'public let anArrayOfIdenticalStrings: [String]',
@@ -169,11 +169,11 @@ describe('GenerateTypes:Swift', () => {
       const expected = [
         'import Foundation',
         '',
-        'class TestSwift {',
+        'public class TestSwift {',
         '',
         indent(4)([
           'public let anArrayOfIdenticalCustomTypes: [AnArrayOfIdenticalCustomTypes]',
-          'class AnArrayOfIdenticalCustomTypes {',
+          'public class AnArrayOfIdenticalCustomTypes {',
           '',
           indent(4)([
             'public let aBoolean: Bool',
@@ -224,7 +224,7 @@ describe('GenerateTypes:Swift', () => {
       const expected = [
         'import Foundation',
         '',
-        'class TestSwift {',
+        'public class TestSwift {',
         '',
         indent(4)([
           'public let anArrayOfDifferentCustomTypes: [Any]',
@@ -263,11 +263,11 @@ describe('GenerateTypes:Swift', () => {
       const expected = [
         'import Foundation',
         '',
-        'class TestSwift {',
+        'public class TestSwift {',
         '',
         indent(4)([
           'public let anArrayOfIdenticalCustomTypes: [AnArrayOfIdenticalCustomTypes]',
-          'class AnArrayOfIdenticalCustomTypes {',
+          'public class AnArrayOfIdenticalCustomTypes {',
           '',
           indent(4)([
             'public let aBoolean: Bool',
@@ -321,7 +321,7 @@ describe('GenerateTypes:Swift', () => {
       const expected = [
         'import Foundation',
         '',
-        'class TestSwift {',
+        'public class TestSwift {',
         '',
         indent(4)([
           'public let aNestedArrayOfStrings: [[[String]]]',
@@ -354,7 +354,7 @@ describe('GenerateTypes:Swift', () => {
       const expected = [
         'import Foundation',
         '',
-        'class TestSwift {',
+        'public class TestSwift {',
         '',
         indent(4)([
           'public let anArrayOfArraysOfDifferentCustomTypes: [Any]',
@@ -389,7 +389,7 @@ describe('GenerateTypes:Swift', () => {
       const expected = [
         'import Foundation',
         '',
-        'class TestSwift {',
+        'public class TestSwift {',
         '',
         indent(4)([
           'public let aNestedArrayOfStrings: [[[String]]]',
@@ -422,7 +422,7 @@ describe('GenerateTypes:Swift', () => {
       const expected = [
         'import Foundation',
         '',
-        'class TestSwift {',
+        'public class TestSwift {',
         '',
         indent(4)([
           'public let aNestedArrayOfStrings: [[[[String]]]]',
@@ -465,11 +465,11 @@ describe('GenerateTypes:Swift', () => {
       const expected = [
         'import Foundation',
         '',
-        'class TestSwift {',
+        'public class TestSwift {',
         '',
         indent(4)([
           'public let record: Record',
-          'class Record {',
+          'public class Record {',
           '',
           indent(4)([
             'public let aString: String',

@@ -35,7 +35,7 @@ export const transform = (json: AnyJSON, className: string): string => {
 
 
   return fromMultiline([
-    `class ${className} {`,
+    `public class ${className} {`,
     '',
     indent(4)([
       R.map((prop) => {
