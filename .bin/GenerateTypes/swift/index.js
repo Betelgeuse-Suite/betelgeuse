@@ -17,7 +17,7 @@ exports.transform = function (json, className) {
         };
     }, R.keys(json));
     return util_1.fromMultiline([
-        "class " + className + " {",
+        "public class " + className + " {",
         '',
         util_1.indent(4)([
             R.map(function (prop) {
