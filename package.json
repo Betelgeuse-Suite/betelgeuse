@@ -1,6 +1,6 @@
 {
   "name": "betelgeuse",
-  "version": "0.0.15",
+  "version": "0.0.16",
   "description": "An all-in-one solution to manage configuration and language in native mobile apps.",
   "main": "index.js",
   "repository": "https://github.com/GabrielCTroia/betelgeuse.git",
