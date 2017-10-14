@@ -2,7 +2,7 @@
   "name": "betelgeuse",
   "version": "0.0.16",
   "description": "An all-in-one solution to manage configuration and language in native mobile apps.",
-  "main": "index.js",
+  "main": "dist/index.js",
   "repository": "https://github.com/GabrielCTroia/betelgeuse.git",
   "author": "Gabriel C. Troia <catalin.troia@gmail.com>",
   "license": "MIT",
@@ -55,9 +55,9 @@
     "typescript": "^2.5.2"
   },
   "scripts": {
-    "clean:build": "rm -rf ./.bin ./build",
+    "clean:build": "rm -rf ./build",
     "clean:tests": "rm -rf ./build_test",
-    "clean:release": "rm -rf ./.bin",
+    "clean:release": "rm -rf ./dist",
     "build": "npm run clean:build && tsc",
     "build:watch": "npm run build -- --watch",
     "test": "mocha -r ts-node/register ./test/**/*.test.ts",
