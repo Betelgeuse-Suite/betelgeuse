@@ -47,7 +47,9 @@ From the Client's perspective, the Betelgeuse Bundle is a valid dependency (NPM 
 
 This gives access to the Data and brings Type Safety out of the box at development time, so the developer always knows what the data looks like. And yes, s/he gets Autocomplete!
 
+![alt Autocomplete Typescript](https://raw.githubusercontent.com/GabrielCTroia/betelgeuse/development/autocomplete_typescript.gif)
 
+![alt Autocomplete Swift](https://raw.githubusercontent.com/GabrielCTroia/betelgeuse/development/autocomplete_swift.gif)
 
 After the App is deployed, the SDK seemingly checks for updates in the background and downloads the best version (latest non-breaking release). At the next App Start (or Load), the new Data is in effect.
 
