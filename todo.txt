@@ -41,38 +41,3 @@ done - find all the yaml files
 done - combine them into one based on their relative path + name
     done - the name of the file becomes the root while the directory the parent root
 done - convert the whole thing to json
-
-
-
-
-
-# NOT IMPORTANT IN PHASE 1
-
-- Sept 18, 2017: Idea: What if each major version is created on a new a branch each time, so it becomes easier to push changes to older versions?!
-- Hmmm, what if master always acts as the version registry, while each major lives a seperate life on its own branch
-
-- maybe develop an SDK to integraet with the app?
-
-- add a cli to creating all the steps
-
-- build a cross platform editor
-    - it's pretty hard to edit files on github
-    - especially data structures such as yaml/json/xml
-    - I think it would be best to build a key/value pair editor which handles all the
-        versioning, diffing, validation and deployment
-    - the editor would be a full replacement the yaml files interface (which can still be used by the dev)
-    - now the editor becomes a full platform, that lives at its dedicated url
-    - at its simplest is just a facade to the en.json
-        - but it fulfils other requirements as well, such as:
-            - validate the input
-            - show the errors
-            - set the version based on the changes type
-            - upload it to s3
-            - offer raw input (to make it easy to migrate from production to staging)
-            - show older versions in a read-only fashion
-            - able to edit older versions, but it must always get the diff from the latest released
-            version, and thus always increase the version.
-                - this will allow the older clients to still work
-                    - although now that I'm thinking about, no user can download an old version of the app
-                    which means that no old client will need to download a next version (since it already has
-                    a version installed)
