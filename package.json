@@ -54,6 +54,10 @@
     "ts-node": "^3.3.0",
     "typescript": "^2.5.2"
   },
+  "preferGlobal": true,
+  "bin": {
+    "betelgeuse": "./bin/betelgeuse.js"
+  },
   "scripts": {
     "clean:build": "rm -rf ./build",
     "clean:tests": "rm -rf ./build_test",
