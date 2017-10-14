@@ -58,8 +58,6 @@ typings/
 .env
 
 # Dist
-dist
-dist_test
 build
 build_test
 tmp

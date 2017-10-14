@@ -2,7 +2,7 @@
   "name": "betelgeuse",
   "version": "0.0.16",
   "description": "An all-in-one solution to manage configuration and language in native mobile apps.",
-  "main": "dist/index.js",
+  "main": "bin/index.js",
   "repository": "https://github.com/GabrielCTroia/betelgeuse.git",
   "author": "Gabriel C. Troia <catalin.troia@gmail.com>",
   "license": "MIT",
