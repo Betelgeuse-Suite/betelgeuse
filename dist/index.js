@@ -4,16 +4,17 @@ var commander = require("commander");
 var shell = require("shelljs");
 var Promise = require("bluebird");
 var Semver = require("semver");
-var util_1 = require("./util");
+var R = require("ramda");
 var Exception_1 = require("./Exception");
 var pkg = require('../package.json');
-var util_2 = require("./util");
+var util_1 = require("./util");
 var CreateFile_1 = require("./CreateFile");
 var GenerateJSON_1 = require("./GenerateJSON");
 var GenerateTypes_1 = require("./GenerateTypes");
 var GenerateClientSDK_1 = require("./GenerateClientSDK");
 var Diff_1 = require("./Diff");
 var VersionsRegistry_1 = require("./VersionsRegistry");
+var BundleInit_1 = require("./BundleInit");
 var command_generateJson = function (srcDir, options) {
     if (options === void 0) { options = {}; }
     return Promise
@@ -25,7 +26,7 @@ var command_generateJson = function (srcDir, options) {
         }
         return Promise.all([
             CreateFile_1.createFile(options.out + "/Data.json", json),
-            CreateFile_1.createFile(options.out + "/Data.js", util_2.jsonToJSONP(json)),
+            CreateFile_1.createFile(options.out + "/Data.js", util_1.jsonToJSONP(json)),
         ]);
     })
         .then(util_1.passThrough(function () {
@@ -38,12 +39,12 @@ var command_generateTypes = function (jsonFilePath, platform, options) {
     if (options === void 0) { options = {}; }
     return Promise
         .resolve(GenerateTypes_1.generateTypes(jsonFilePath, platform))
-        .then(util_2.passThroughAwait(function (generated) {
+        .then(util_1.passThroughAwait(function (generated) {
         if (typeof options.out !== 'string') {
             console.log(generated);
             return;
         }
-        return util_2.writeFile(options.out, generated);
+        return util_1.writeFile(options.out, generated);
     }))
         .then(util_1.passThrough(function () {
         if (options.out) {
@@ -59,8 +60,8 @@ commander
     .action(command_generateJson);
 var getReleaseTypeFromFiles = function (nextJsonPath, prevJsonPath) {
     return Promise.all([
-        util_2.readFile(nextJsonPath).then(util_2.jsonToObj),
-        util_2.readFile(prevJsonPath).then(util_2.jsonToObj),
+        util_1.readFile(nextJsonPath).then(util_1.jsonToObj),
+        util_1.readFile(prevJsonPath).then(util_1.jsonToObj),
     ])
         .then(function (_a) {
         var prev = _a[0], next = _a[1];
@@ -108,8 +109,8 @@ var command_generateClientSDK = function (appName, options) {
             return;
         }
         return Promise.all([
-            util_2.writeFile(options.out + "/betelgeuse.d.ts", tsd),
-            util_2.writeFile(options.out + "/betelgeuse.js", js),
+            util_1.writeFile(options.out + "/betelgeuse.d.ts", tsd),
+            util_1.writeFile(options.out + "/betelgeuse.js", js),
         ])
             .then(function () { return undefined; });
     })
@@ -128,9 +129,23 @@ var getNextVersionNumber = function (currentVersion, releaseType) {
     }
     return Semver.inc(currentVersion, releaseType) || currentVersion;
 };
+var applyBundleVersion = function (jsonPath, releaseType) {
+    return Promise
+        .resolve(util_1.readFile(jsonPath))
+        .then(util_1.jsonToObj)
+        .then(function (bundleJson) {
+        var nextVersion = Semver.inc(bundleJson.version, releaseType);
+        return R.merge(bundleJson, {
+            version: nextVersion,
+        });
+    })
+        .then(util_1.objToJson)
+        .then(function (content) { return util_1.writeFile(jsonPath, content); });
+};
 var applyVersion = function (releaseType, AppName, repoPath) {
     var tmp = repoPath + "/tmp";
     var compiled = repoPath + "/.bin";
+    var bundleJson = require(process.cwd() + "/" + repoPath + "/betelgeuse.json");
     return Promise
         .resolve(releaseType)
         .then(function (releaseType) {
@@ -153,7 +168,6 @@ var applyVersion = function (releaseType, AppName, repoPath) {
         shell.exec("git commit -m 'Betelgeuse Commit: Source Compiled.'");
     }))
         .then(function (releaseType) {
-        return shell.exec("npm version " + releaseType);
     });
 };
 var deployToRepo = function () {
@@ -174,11 +188,14 @@ commander
     .option('--endpoint-base-url <endpointBaseUrl>', 'The endpoint base url')
     .action(command_generateClientSDK);
 var APP_NAME = 'MyApp';
+var isInitialCompile = function (bundlePath) {
+    return !util_1.fileExists(process.cwd() + "/" + bundlePath + "/.bin/Data.json");
+};
 var command_compile = function (repoPath) {
     var AppName = APP_NAME;
     var compiled = process.cwd() + "/" + repoPath + "/.bin";
     var tmp = process.cwd() + "/" + repoPath + "/tmp";
-    var repoPackage = require(process.cwd() + "/" + repoPath + "/package.json");
+    var bundleJson = require(process.cwd() + "/" + repoPath + "/betelgeuse.json");
     return Promise
         .resolve()
         .then(function () {
@@ -190,11 +207,16 @@ var command_compile = function (repoPath) {
         command_generateTypes(tmp + "/Data.json", GenerateTypes_1.Platform.typescript, { out: tmp + "/Data.d.ts" }),
         command_generateTypes(tmp + "/Data.json", GenerateTypes_1.Platform.swift, { out: tmp + "/Model.swift" }),
     ]); })
-        .then(function () { return getReleaseTypeFromFiles(tmp + "/Data.json", compiled + "/Data.json"); })
-        .then(util_2.passThroughAwait(function (releaseType) { return command_generateClientSDK(AppName, {
+        .then(function () {
+        if (isInitialCompile(repoPath)) {
+            return 'patch';
+        }
+        return getReleaseTypeFromFiles(tmp + "/Data.json", compiled + "/Data.json");
+    })
+        .then(util_1.passThroughAwait(function (releaseType) { return command_generateClientSDK(AppName, {
         out: tmp,
-        repoVersion: getNextVersionNumber(repoPackage.version, releaseType),
-        endpointBaseUrl: repoPackage.cdn,
+        repoVersion: getNextVersionNumber(bundleJson.version, releaseType),
+        endpointBaseUrl: bundleJson.cdn,
     }); }))
         .then(function (releaseType) { return applyVersion(releaseType, AppName, repoPath); })
         .then(function () { return updateVersionRegistryAndCommit(repoPath); })
@@ -219,4 +241,7 @@ commander
 commander
     .command('compile-sdks <repositoryPath>')
     .action(command_compile_sdk);
+commander
+    .command('init <name>')
+    .action(BundleInit_1.bundleInit);
 commander.parse(process.argv);

@@ -91,6 +91,9 @@ exports.makeDirRecursively = function (path) {
         });
     });
 };
+exports.fileExists = function (path) {
+    return fs.existsSync(path);
+};
 exports.passThrough = function (fn) { return function (arg) {
     return Promise.resolve(fn.call(fn, arg)).then(function () { return arg; });
 }; };

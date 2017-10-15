@@ -11,6 +11,7 @@ export declare type ReadFile = {
 };
 export declare const readFiles: (dirname: string, onDone: (...args: any[]) => void, onError: (...args: any[]) => void) => void;
 export declare const makeDirRecursively: (path: string) => Promise<{}>;
+export declare const fileExists: (path: string) => boolean;
 export declare const passThrough: <T>(fn: (a: T) => void) => (arg: T) => Promise<T>;
 export declare const passThroughAwait: <T>(fn: (a: T) => void) => (arg: T) => Promise<T>;
 export declare const jsonToJSONP: (json: string) => string;
