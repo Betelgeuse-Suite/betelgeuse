@@ -3,8 +3,8 @@ import * as shell from 'shelljs';
 import * as Promise from 'bluebird';
 import * as Semver from 'semver';
 import * as R from 'ramda';
+import * as fs from 'fs';
 
-import { passThrough } from './util';
 import {
   Exception,
   NoChangesException,
@@ -19,6 +19,9 @@ import {
   passThroughAwait,
   writeFile,
   jsonToJSONP,
+  passThrough,
+  fileExists,
+  readJSONFile,
 } from './util';
 import { createFile } from './CreateFile';
 
@@ -168,9 +171,24 @@ const getNextVersionNumber = (currentVersion: string, releaseType: Semver.Releas
   return Semver.inc(currentVersion, releaseType) || currentVersion;
 }
 
+const applyBundleVersion = (jsonPath: string, releaseType: Semver.ReleaseType) => {
+  return Promise
+    .resolve(readFile(jsonPath))
+    .then(jsonToObj)
+    .then((bundleJson: { version: string }) => {
+      const nextVersion = Semver.inc(bundleJson.version, releaseType);
+      return R.merge(bundleJson, {
+        version: nextVersion,
+      });
+    })
+    .then(objToJson)
+    .then((content) => writeFile(jsonPath, content));
+}
+
 const applyVersion = (releaseType: Semver.ReleaseType | 'none', AppName: string, repoPath: string) => {
   const tmp = `${repoPath}/tmp`;
   const compiled = `${repoPath}/.bin`;
+  const bundleJson = require(`${process.cwd()}/${repoPath}/betelgeuse.json`);
 
   return Promise
     .resolve(releaseType)
@@ -199,8 +217,11 @@ const applyVersion = (releaseType: Semver.ReleaseType | 'none', AppName: string,
       shell.exec(`git commit -m 'Betelgeuse Commit: Source Compiled.'`);
     }))
     .then((releaseType) => {
+      // return applyBundleVersion(bundleJson, releaseType);
       // Apply the version, by using `npm version` which creates a commit and a relese tag
-      return shell.exec(`npm version ${releaseType}`);
+
+      // this is only available in the typescript/js client-sdk paltform
+      // return shell.exec(`npm version ${releaseType}`);
     });
 }
 
@@ -228,6 +249,10 @@ commander
 
 const APP_NAME = 'MyApp';
 
+const isInitialCompile = (bundlePath: string) => {
+  return !fileExists(`${process.cwd()}/${bundlePath}/.bin/Data.json`);
+}
+
 // The compile command takes care of:
 //  Steps 1, 2, 3 and 4 - - Apply the next version to both generated files
 const command_compile = (repoPath: string) => {
@@ -235,7 +260,7 @@ const command_compile = (repoPath: string) => {
   const AppName = APP_NAME;
   const compiled = `${process.cwd()}/${repoPath}/.bin`;
   const tmp = `${process.cwd()}/${repoPath}/tmp`;
-  const repoPackage = require(`${process.cwd()}/${repoPath}/package.json`);
+  const bundleJson = require(`${process.cwd()}/${repoPath}/betelgeuse.json`);
 
   // TODO: need to get the next semver to pass it to generateClientSDKs
 
@@ -251,11 +276,18 @@ const command_compile = (repoPath: string) => {
       command_generateTypes(`${tmp}/Data.json`, Platform.typescript, { out: `${tmp}/Data.d.ts` }), // => tsd
       command_generateTypes(`${tmp}/Data.json`, Platform.swift, { out: `${tmp}/Model.swift` }), // swift
     ]))
-    .then(() => getReleaseTypeFromFiles(`${tmp}/Data.json`, `${compiled}/Data.json`))
+    .then(() => {
+      // If it's the very first compile, just return a patch
+      if (isInitialCompile(repoPath)) {
+        return 'patch';
+      }
+      // otherwise get the release type
+      return getReleaseTypeFromFiles(`${tmp}/Data.json`, `${compiled}/Data.json`);
+    })
     .then(passThroughAwait((releaseType) => command_generateClientSDK(AppName, { // => client sdks
       out: tmp,
-      repoVersion: getNextVersionNumber(repoPackage.version, releaseType),
-      endpointBaseUrl: repoPackage.cdn,
+      repoVersion: getNextVersionNumber(bundleJson.version, releaseType),
+      endpointBaseUrl: bundleJson.cdn,
     })))
     .then((releaseType) => applyVersion(releaseType, AppName, repoPath)) // => apply next version
     .then(() => updateVersionRegistryAndCommit(repoPath)) // update the version registry

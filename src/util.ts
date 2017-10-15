@@ -110,6 +110,10 @@ export const makeDirRecursively = (path: string) => {
   });
 }
 
+export const fileExists = (path: string) => {
+  return fs.existsSync(path);
+}
+
 /**
  * PassThrough takes an argument function fn and returns
  * a thunk that takes an argument a

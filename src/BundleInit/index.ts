@@ -1,6 +1,7 @@
 'use strict';
 
 import * as shell from 'shelljs';
+import * as Promise from 'bluebird';
 
 const prompt = require('prompt');
 // For some Reason is not exposed in shelljs types
@@ -75,6 +76,14 @@ export const bundleInit = (bundleName: string) => {
 
       ShellString(getBetelgeuseJson(bundleName, r.cdn)).to(`${bundleName}/betelgeuse.json`);
       ShellString(srcYaml).to(`${bundleName}/source/index.yml`);
+
+
+      shell.exec([
+        `cd ${bundleName}`,
+        'git init',
+        'git add .',
+        'git commit -m "Betelgeuse Initial Commit!"'
+      ].join(';'));
     })
     .then(() => {
       console.log('Done');
