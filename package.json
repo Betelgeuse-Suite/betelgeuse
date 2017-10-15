@@ -43,6 +43,7 @@
     "lodash.values": "^4.3.0",
     "mkdirp": "^0.5.1",
     "nodejs-paths": "^1.0.3",
+    "prompt": "^1.0.0",
     "ramda": "^0.24.1",
     "semver": "^5.4.1",
     "shelljs": "^0.7.8",

@@ -27,6 +27,7 @@ import { generateTypes, Platform } from './GenerateTypes';
 import { generateClientSDKs } from './GenerateClientSDK';
 import { getReleaseType } from './Diff';
 import { updateVesionRegistry } from './VersionsRegistry';
+import { bundleInit } from './BundleInit';
 
 const command_generateJson = (srcDir: string, options: { out?: string } = {}) => {
   return Promise
@@ -286,6 +287,10 @@ commander
 commander
   .command('compile-sdks <repositoryPath>')
   .action(command_compile_sdk);
+
+commander
+  .command('init <name>')
+  .action(bundleInit);
 
 // Step 5 - Push new files to the CDN
 // No need for it yet, as we can use the git repo for testing
