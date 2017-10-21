@@ -2,6 +2,8 @@ import * as fs from 'fs';
 import * as Promise from 'bluebird';
 import * as beautify from 'js-beautify';
 import * as mkdirp from 'mkdirp';
+import * as Semver from 'Semver';
+import * as shell from 'shelljs';
 
 export const readFile = (path: string) => {
   return new Promise((resolve, reject) => {
@@ -148,3 +150,17 @@ export const getRandomString = (length: number = 3) => {
 
   return str;
 };
+
+
+export const getNextVersionNumber = (currentVersion: string, releaseType: Semver.ReleaseType | 'none') => {
+  if (releaseType === 'none') {
+    return currentVersion;
+  }
+
+  return Semver.inc(currentVersion, releaseType) || currentVersion;
+}
+
+export const getUntrackedFiles = (path: string) => {
+  return !!shell.exec(`git diff ${path} --name-only`).stdout;
+}
+
