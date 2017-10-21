@@ -5,11 +5,7 @@ import * as Promise from 'bluebird';
 import { generate as generateTSD } from './typescript';
 import { generate as generateSwift } from './swift';
 import { readFile } from '../util';
-
-export enum Platform {
-  swift,
-  typescript,
-}
+import { Platform } from '../Betelgeuse';
 
 export const generateTypes = (jsonPath: string, platform: Platform) => {
   const generatorsByPlatform = {

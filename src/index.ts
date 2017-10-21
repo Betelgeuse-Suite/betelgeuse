@@ -1,7 +1,7 @@
 import * as commander from 'commander';
 const pkg = require('../package.json');
 
-import { Platform } from './GenerateTypes';
+import { Platform } from './Betelgeuse';
 import { 
   command_compile,
   command_compile_sdk,

@@ -18,19 +18,23 @@ import {
   passThroughAwait,
   writeFile,
   jsonToJSONP,
-  getUntrackedFiles,
+  getUncommitedFiles,
   getNextVersionNumber,
 } from './util';
 import { createFile } from './CreateFile';
 
 import { generateJSONFromYamlFiles } from './GenerateJSON';
-import { generateTypes, Platform } from './GenerateTypes';
+import { generateTypes } from './GenerateTypes';
 import { generateClientSDKs } from './GenerateClientSDK';
 import { getReleaseType } from './Diff';
 import { updateVesionRegistry } from './VersionsRegistry';
-
-// This should come from somewhere else :) betelgeuse.json file
-const APP_NAME = 'MyApp';
+import {
+  Platform,
+  BetelgeuseReleaseType,
+} from './Betelgeuse';
+import {
+  getBundleInformation,
+} from './Bundle';
 
 
 export const command_generateJson = (srcDir: string, options: { out?: string } = {}) => {
@@ -49,7 +53,7 @@ export const command_generateJson = (srcDir: string, options: { out?: string } =
     })
     .then(passThrough(() => {
       if (options.out) {
-        console.log('Successfully generated JSON files from', srcDir, 'at', options.out);
+        console.log('Successfully generated JSON files');
       }
     }));
 }
@@ -71,7 +75,7 @@ export const command_generateTypes = (
     }))
     .then(passThrough(() => {
       if (options.out) {
-        console.log(`Successfully generated ${Platform[platform]} file based on`, jsonFilePath, 'at', options.out);
+        console.log(`Successfully generated ${Platform[platform]} file`);
       }
     }));
 }
@@ -125,12 +129,103 @@ export const command_generateClientSDK = (
     })
     .then(passThrough(() => {
       if (options.out) {
-        console.log('Successfully generated SDKs at', options.out);
+        console.log('Successfully generated Client SDKs');
       }
     }));
 }
 
-const applyVersion = (releaseType: Semver.ReleaseType | 'none', AppName: string, repoPath: string) => {
+export const command_compile_sdk = (bundlePath: string) => {
+  // validate is betelgeuse repo
+  const bundle = getBundleInformation(bundlePath);
+
+  return Promise
+    .resolve(command_generateClientSDK(bundle.appName, {
+      out: bundle.paths.bin,
+      repoVersion: bundle.version,
+      endpointBaseUrl: bundle.cdn,
+    }))
+    .catch((e: Exception) => console.error(e.message));
+}
+
+export const command_compile = (bundlePath: string) => {
+
+  // validate bundle: ./source, ./compiled dir and package.json or smtg like that
+  const bundle = getBundleInformation(bundlePath);
+  
+  console.log('Compiling', bundle.appName, '...', '\n');
+
+  if (!!getUncommitedFiles(bundle.paths.bin)) {
+    console.log('');
+    console.log('There are unsaved changes in .bin (Probably from a previous compilation)! Save the changes and retry.');
+    return;
+  }
+
+  const clean = (path: string) => {
+    shell.rm('-rf', path);
+    shell.mkdir(path);
+  }
+
+  const updateBinDir = () => {
+    shell.rm('-rf', bundle.paths.bin);
+    shell.mv(bundle.paths.tmp, bundle.paths.bin);
+  }
+
+  const initPayload = {
+    releaseType: 'none',
+    version: bundle.version,
+  };
+
+  return Promise
+    // start with an initial payload
+    .resolve(initPayload)
+    .then(passThrough(() => clean(bundle.paths.tmp)))
+    .then(passThrough(() => command_generateJson(`${bundle.paths.source}`, { out: `${bundle.paths.tmp}` }))) // => json
+    .then((payload) => {
+      return getReleaseTypeFromFiles(`${bundle.paths.tmp}/Data.json`, `${bundle.paths.bin}/Data.json`)
+        .then((nextReleaseType) => ({
+          releaseType: nextReleaseType,
+          version: getNextVersionNumber(payload.version, nextReleaseType),
+        }));
+    })
+    .then(passThroughAwait(() => Promise.all([
+      // TODO filter by platform
+      command_generateTypes(`${bundle.paths.tmp}/Data.json`, Platform.typescript, { out: `${bundle.paths.tmp}/Data.d.ts` }), // => tsd
+      command_generateTypes(`${bundle.paths.tmp}/Data.json`, Platform.swift, { out: `${bundle.paths.tmp}/Model.swift` }), // swift
+    ])))
+    .then(passThroughAwait((payload) => command_generateClientSDK(bundle.appName, {
+      out: bundle.paths.tmp,
+      repoVersion: payload.version,
+      endpointBaseUrl: bundle.cdn,
+    })))
+    .then(passThrough(updateBinDir))
+    .then(() => {
+      console.log('');
+      console.log('Done.');
+    })
+    .catch((e: Exception) => console.error(e.message));
+}
+
+
+// WIP the Save function is a combinatino of ApplyVersion and updateVersionsRegistry
+// Hmm...not quite sure how to get the release type without passing it in
+export const command_save = (bundlePath: string) => {
+  // validate bundle: ./source, ./compiled dir and package.json or smtg like that
+  const bundle = getBundleInformation(bundlePath);
+  
+  console.log('Saving', bundle.appName, '...', '\n');
+
+  return Promise
+    .resolve()
+    .then(() => {
+
+    });
+}
+
+// .then((releaseType) => applyVersion(releaseType, AppName, repoPath)) // => apply next version
+    // .then(() => updateVersionRegistryAndCommit(repoPath)) // update the version registry
+
+    // TODO: Take out most of the git commit commands, and moing files aroun and only stick with the tagging and maybe one last commit
+const applyVersion = (releaseType: BetelgeuseReleaseType, AppName: string, repoPath: string) => {
   const tmp = `${repoPath}/tmp`;
   const compiled = `${repoPath}/.bin`;
 
@@ -144,7 +239,7 @@ const applyVersion = (releaseType: Semver.ReleaseType | 'none', AppName: string,
       return releaseType;
     })
     .then(passThrough((releaseType) => {
-      if (getUntrackedFiles(repoPath)) {
+      if (getUncommitedFiles(repoPath)) {
         return Promise.reject(new UncommitedChanges())
       }
 
@@ -166,6 +261,7 @@ const applyVersion = (releaseType: Semver.ReleaseType | 'none', AppName: string,
     });
 }
 
+// TODO: don't update in the VersionsRegistry
 const updateVersionRegistryAndCommit = (repoPath: string) => {
   return Promise
     .resolve(updateVesionRegistry(repoPath))
@@ -175,58 +271,11 @@ const updateVersionRegistryAndCommit = (repoPath: string) => {
     });
 }
 
-// The compile command takes care of:
-//  Steps 1, 2, 3 and 4 - - Apply the next version to both generated files
-export const command_compile = (repoPath: string) => {
-  // validate is betelgeuse repo: ./source, ./compiled dir and package.json or smtg like that
-  const AppName = APP_NAME;
-  const compiled = `${process.cwd()}/${repoPath}/.bin`;
-  const tmp = `${process.cwd()}/${repoPath}/tmp`;
-  const repoPackage = require(`${process.cwd()}/${repoPath}/package.json`);
 
-  // TODO: need to get the next semver to pass it to generateClientSDKs
+export const command_deploy = (bundlePath: string) => {
+  // validate that path is a bundle
+  const bundle = getBundleInformation(bundlePath);
 
-  return Promise
-    .resolve()
-    .then(() => {
-      // Clean Step
-      shell.rm('-rf', tmp);
-      shell.mkdir(tmp);
-    })
-    .then(() => command_generateJson(`${repoPath}/source`, { out: `${tmp}` })) // => json
-    .then(() => Promise.all([
-      command_generateTypes(`${tmp}/Data.json`, Platform.typescript, { out: `${tmp}/Data.d.ts` }), // => tsd
-      command_generateTypes(`${tmp}/Data.json`, Platform.swift, { out: `${tmp}/Model.swift` }), // swift
-    ]))
-    .then(() => getReleaseTypeFromFiles(`${tmp}/Data.json`, `${compiled}/Data.json`))
-    .then(passThroughAwait((releaseType) => command_generateClientSDK(AppName, { // => client sdks
-      out: tmp,
-      repoVersion: getNextVersionNumber(repoPackage.version, releaseType),
-      endpointBaseUrl: repoPackage.cdn,
-    })))
-    .then((releaseType) => applyVersion(releaseType, AppName, repoPath)) // => apply next version
-    .then(() => updateVersionRegistryAndCommit(repoPath)) // update the version registry
-    .catch((e: Exception) => console.error(e.message));
-}
-
-
-export const command_compile_sdk = (repoPath: string) => {
-  // validate is betelgeuse repo
-
-  const AppName = APP_NAME;
-  const compiled = `${process.cwd()}/${repoPath}/.bin`;
-  const repoPackage = require(`${process.cwd()}/${repoPath}/package.json`);
-
-  return Promise
-    .resolve(command_generateClientSDK(AppName, {
-      out: compiled,
-      repoVersion: repoPackage.version,
-      endpointBaseUrl: repoPackage.cdn,
-    }))
-    .catch((e: Exception) => console.error(e.message));
-}
-
-export const command_deploy = () => {
   // Deploy the copmiled changes (by pushing to its remote origin)
   return shell.exec('git push origin master; git push --tags');
 }

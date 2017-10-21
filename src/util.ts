@@ -160,7 +160,7 @@ export const getNextVersionNumber = (currentVersion: string, releaseType: Semver
   return Semver.inc(currentVersion, releaseType) || currentVersion;
 }
 
-export const getUntrackedFiles = (path: string) => {
-  return !!shell.exec(`git diff ${path} --name-only`).stdout;
+export const getUncommitedFiles = (path: string) => {
+  return !!shell.exec(`git diff --name-only ${path}`).stdout;
 }
 
